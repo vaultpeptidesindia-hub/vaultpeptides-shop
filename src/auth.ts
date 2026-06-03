@@ -1,35 +1,41 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
-import authConfig from "@/auth.config";
+import { authConfig } from "@/auth.config";
+import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
+import { z } from "zod";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
-  pages: {
-    signIn: "/login",
-  },
-  callbacks: {
-    async session({ token, session }) {
-      if (token.sub && session.user) {
-        session.user.id = token.sub;
-      }
-      if (token.role && session.user) {
-        session.user.role = token.role as "USER" | "ADMIN";
-      }
-      return session;
-    },
-    async jwt({ token }) {
-      if (!token.sub) return token;
+  providers: [
+    Credentials({
+      async authorize(credentials) {
+        const parsedCredentials = z
+          .object({ email: z.string().email(), password: z.string().min(6) })
+          .safeParse(credentials);
 
-      const existingUser = await db.user.findUnique({ where: { id: token.sub } });
+        if (parsedCredentials.success) {
+          const { email, password } = parsedCredentials.data;
+          const user = await db.user.findUnique({ where: { email } });
+          if (!user) return null;
 
-      if (!existingUser) return token;
+          const passwordsMatch = await bcrypt.compare(password, user.passwordHash);
 
-      token.role = existingUser.role;
+          if (passwordsMatch) {
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+            };
+          }
+        }
 
-      return token;
-    },
-  },
-  ...authConfig,
+        return null;
+      },
+    }),
+  ],
 });

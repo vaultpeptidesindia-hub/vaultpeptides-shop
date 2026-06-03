@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Navbar from "@/components/layout/navbar";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Beaker, ShieldCheck, Zap } from "lucide-react";

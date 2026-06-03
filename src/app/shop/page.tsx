@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Navbar from "@/components/layout/navbar";
 import { db } from "@/lib/db";
 import { ProductCard } from "@/components/shop/product-card";

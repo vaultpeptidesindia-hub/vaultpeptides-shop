@@ -113,7 +113,7 @@ export default async function Home() {
                     {product.name}
                   </h3>
                   <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold">₹{product.price}</span>
+                    <span className="text-xl font-bold">From ₹{product.basePrice}</span>
                     <Button size="sm" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                       Details
                     </Button>

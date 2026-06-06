@@ -10,11 +10,11 @@ export const getCart = async () => {
 
   return await db.cart.findUnique({
     where: { userId: session.user.id },
-    include: { items: { include: { product: true } } },
+    include: { items: { include: { variant: { include: { product: true } } } } },
   });
 };
 
-export const addToCart = async (productId: string, quantity: number = 1) => {
+export const addToCart = async (variantId: string, quantity: number = 1) => {
   const session = await auth();
   if (!session?.user?.id) return { error: "Please login to add items to cart." };
 
@@ -31,9 +31,9 @@ export const addToCart = async (productId: string, quantity: number = 1) => {
 
     const existingItem = await db.cartItem.findUnique({
       where: {
-        cartId_productId: {
+        cartId_variantId: {
           cartId: cart.id,
-          productId,
+          variantId,
         },
       },
     });
@@ -47,7 +47,7 @@ export const addToCart = async (productId: string, quantity: number = 1) => {
       await db.cartItem.create({
         data: {
           cartId: cart.id,
-          productId,
+          variantId,
           quantity,
         },
       });
@@ -82,5 +82,53 @@ export const updateCartItemQuantity = async (itemId: string, quantity: number) =
     return { success: "Updated quantity!" };
   } catch {
     return { error: "Failed to update quantity." };
+  }
+};
+
+export const mergeCart = async (items: { variantId: string; quantity: number }[]) => {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not logged in." };
+
+  try {
+    let cart = await db.cart.findUnique({
+      where: { userId: session.user.id },
+    });
+
+    if (!cart) {
+      cart = await db.cart.create({
+        data: { userId: session.user.id },
+      });
+    }
+
+    for (const item of items) {
+      const existingItem = await db.cartItem.findUnique({
+        where: {
+          cartId_variantId: {
+            cartId: cart.id,
+            variantId: item.variantId,
+          },
+        },
+      });
+
+      if (existingItem) {
+        await db.cartItem.update({
+          where: { id: existingItem.id },
+          data: { quantity: existingItem.quantity + item.quantity },
+        });
+      } else {
+        await db.cartItem.create({
+          data: {
+            cartId: cart.id,
+            variantId: item.variantId,
+            quantity: item.quantity,
+          },
+        });
+      }
+    }
+
+    revalidatePath("/cart");
+    return { success: true };
+  } catch {
+    return { error: "Failed to merge cart." };
   }
 };

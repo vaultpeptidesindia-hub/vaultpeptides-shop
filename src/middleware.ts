@@ -8,7 +8,9 @@ export default auth((req) => {
   const { nextUrl } = req;
 
   const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth");
-  const isPublicRoute = ["/", "/shop"].includes(nextUrl.pathname) || nextUrl.pathname.startsWith("/product/");
+  const isPublicRoute =
+    ["/", "/shop", "/cart", "/checkout", "/wholesale", "/about", "/contact"].includes(nextUrl.pathname) ||
+    nextUrl.pathname.startsWith("/product/");
   const isAuthRoute = ["/login", "/signup", "/forgot-password"].includes(nextUrl.pathname);
 
   const isAdminRoute = nextUrl.pathname.startsWith("/admin");

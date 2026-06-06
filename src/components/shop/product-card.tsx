@@ -3,10 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { useCart } from "@/store/use-cart";
-import { addToCart } from "@/actions/cart";
-import { toast } from "sonner";
-import { ShoppingCart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 interface ProductCardProps {
   product: {
@@ -14,7 +11,7 @@ interface ProductCardProps {
     name: string;
     slug: string;
     description: string;
-    price: number;
+    basePrice: number;
     images?: string[];
     isFeatured: boolean;
     category?: { name: string };
@@ -22,41 +19,16 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const cart = useCart();
-
-  const handleAddToCart = async () => {
-    // Optimistic UI update
-    cart.addItem({
-      id: Math.random().toString(), // Temp ID for local state if needed
-      productId: product.id,
-      name: product.name,
-      price: product.price,
-      quantity: 1,
-      image: product.images?.[0],
-    });
-
-    // Server update
-    const res = await addToCart(product.id, 1);
-    if (res.success) {
-      toast.success(res.success);
-    } else if (res.error && res.error.includes("login")) {
-      // If error is login, we keep it in local storage only, which is fine
-      toast.info("Added to local cart. Login to sync across devices.");
-    } else {
-      toast.error(res.error);
-    }
-  };
-
-  const mainImage = product.images?.[0] || "/logo.png"; // Fallback to logo if no image
+  const mainImage = product.images?.[0] || "/logo.png";
 
   return (
     <div className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all flex flex-col">
       <Link href={`/product/${product.slug}`} className="aspect-square bg-muted relative block overflow-hidden">
-        <Image 
-          src={mainImage} 
-          alt={product.name} 
-          fill 
-          className="object-cover group-hover:scale-110 transition-transform duration-500" 
+        <Image
+          src={mainImage}
+          alt={product.name}
+          fill
+          className="object-cover group-hover:scale-110 transition-transform duration-500"
         />
         {product.isFeatured && (
           <div className="absolute top-4 left-4 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-widest">
@@ -77,15 +49,12 @@ export function ProductCard({ product }: ProductCardProps) {
           {product.description}
         </p>
         <div className="flex items-center justify-between mt-auto">
-          <span className="text-xl font-bold">₹{product.price.toFixed(2)}</span>
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-            onClick={handleAddToCart}
-          >
-            <ShoppingCart className="h-4 w-4 mr-2" /> Add
-          </Button>
+          <span className="text-xl font-bold">From ₹{product.basePrice.toFixed(2)}</span>
+          <Link href={`/product/${product.slug}`}>
+            <Button size="sm" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+              View <ArrowRight className="h-3 w-3 ml-1" />
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

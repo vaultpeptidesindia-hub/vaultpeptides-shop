@@ -41,7 +41,7 @@ export default async function AdminOrdersPage() {
             {orders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell className="font-mono font-medium">{order.orderNumber}</TableCell>
-                <TableCell>{order.user.name}</TableCell>
+                <TableCell>{order.user?.name ?? "Guest"}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className="border-primary text-primary">
                     {order.status}

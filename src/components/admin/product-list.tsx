@@ -26,8 +26,7 @@ interface ProductListProps {
   initialProducts: Array<{
     id: string;
     name: string;
-    price: number;
-    stock: number;
+    basePrice: number;
     status: string;
     category?: { name: string };
   }>;
@@ -55,8 +54,7 @@ export function ProductList({ initialProducts }: ProductListProps) {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Category</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Stock</TableHead>
+            <TableHead>Base Price</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -66,8 +64,7 @@ export function ProductList({ initialProducts }: ProductListProps) {
             <TableRow key={product.id}>
               <TableCell className="font-medium">{product.name}</TableCell>
               <TableCell>{product.category?.name || "N/A"}</TableCell>
-              <TableCell>₹{product.price.toFixed(2)}</TableCell>
-              <TableCell>{product.stock}</TableCell>
+              <TableCell>From ₹{product.basePrice.toFixed(2)}</TableCell>
               <TableCell>
                 <Badge variant={product.status === "ACTIVE" ? "default" : "secondary"}>
                   {product.status}

@@ -5,7 +5,6 @@ import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowRight, ShieldCheck, FlaskConical, Truck, Award } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { db } from "@/lib/db";
 import { ProductCard } from "@/components/shop/product-card";
 
@@ -21,33 +20,7 @@ export default async function Home() {
       <Navbar />
 
       {/* ── Hero ───────────────────────────────────────────── */}
-      <section className="relative min-h-[100svh] flex items-center justify-center dot-pattern overflow-hidden">
-        {/* Spine background image */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-          <Image
-            src="/products/RETATRUTIDE 10mg.png"
-            alt=""
-            width={520}
-            height={900}
-            className="object-contain opacity-20 scale-150"
-            priority
-          />
-        </div>
-
-        {/* Floating particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1.5 h-1.5 rounded-full bg-primary/20"
-              style={{
-                left: `${10 + (i * 7.5) % 80}%`,
-                top: `${15 + (i * 11) % 70}%`,
-              }}
-            />
-          ))}
-        </div>
-
+      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
         {/* Central card */}
         <div className="relative z-10 glass-card rounded-2xl p-10 md:p-14 max-w-xl mx-4 text-center shadow-sm">
           <p className="text-[10px] font-sans font-medium tracking-[0.25em] text-primary/70 uppercase mb-6">

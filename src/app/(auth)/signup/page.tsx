@@ -47,9 +47,8 @@ export default function SignupPage() {
       <div className="w-full max-w-md space-y-6">
 
         <div className="text-center">
-          <Link href="/" className="inline-flex flex-col items-center gap-2">
-            <Image src="/logo.png" alt="Vault Peptides" width={52} height={52} className="object-contain" />
-            <span className="text-xl font-bold tracking-tighter">VAULT PEPTIDES</span>
+          <Link href="/" className="inline-block">
+            <Image src="/logo.png" alt="Vault Peptides" width={180} height={64} className="object-contain h-14 w-auto mx-auto" />
           </Link>
         </div>
 

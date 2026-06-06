@@ -7,9 +7,8 @@ export default function Footer() {
       <div className="container mx-auto px-4 lg:px-8 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12">
           <div className="col-span-2 lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2.5 mb-6">
-              <Image src="/logo.png" alt="Vault Peptides" width={36} height={36} className="object-contain" />
-              <span className="font-serif text-lg font-semibold tracking-wide">VAULT PEPTIDES</span>
+            <Link href="/" className="inline-block mb-6">
+              <Image src="/logo.png" alt="Vault Peptides" width={148} height={52} className="object-contain h-10 w-auto" />
             </Link>
             <p className="font-sans text-sm text-muted-foreground max-w-xs leading-relaxed mb-4">
               Premium lab-tested research peptides. Strictly for scientific and research purposes only.

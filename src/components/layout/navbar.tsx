@@ -10,9 +10,8 @@ export default async function Navbar() {
     <nav className="h-16 border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto h-full flex items-center justify-between px-4 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 shrink-0">
-          <Image src="/logo.png" alt="Vault Peptides" width={36} height={36} className="object-contain" />
-          <span className="font-serif text-lg font-semibold tracking-wide text-foreground">VAULT PEPTIDES</span>
+        <Link href="/" className="shrink-0">
+          <Image src="/logo.png" alt="Vault Peptides" width={148} height={52} className="object-contain h-10 w-auto" priority />
         </Link>
 
         {/* Desktop nav links */}

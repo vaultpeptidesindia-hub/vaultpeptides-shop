@@ -8,7 +8,7 @@ const RegisterSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   name: z.string().min(1),
-  phone: z.string().optional(),
+  phone: z.string().min(10, "Valid phone number required"),
 });
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {

@@ -9,11 +9,36 @@ function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-export const sendOTP = async (phone: string) => {
-  const parsed = z.string().min(10).safeParse(phone);
-  if (!parsed.success) return { error: "Invalid phone number." };
+async function sendSMS(phone: string, otp: string): Promise<void> {
+  const apiKey = process.env.FAST2SMS_API_KEY;
+  if (!apiKey) {
+    console.warn("[OTP] FAST2SMS_API_KEY not set — OTP:", otp);
+    return;
+  }
 
-  // Invalidate any existing OTPs for this phone
+  const url = new URL("https://www.fast2sms.com/dev/bulkV2");
+  url.searchParams.set("authorization", apiKey);
+  url.searchParams.set("variables_values", otp);
+  url.searchParams.set("route", "otp");
+  url.searchParams.set("numbers", phone);
+
+  const res = await fetch(url.toString(), {
+    method: "GET",
+    headers: { "cache-control": "no-cache" },
+  });
+
+  const data = await res.json();
+  if (!data.return) {
+    console.error("[OTP] Fast2SMS error:", data.message);
+    throw new Error("Failed to send OTP via SMS.");
+  }
+}
+
+export const sendOTP = async (phone: string) => {
+  const parsed = z.string().min(10).max(10).regex(/^\d+$/).safeParse(phone);
+  if (!parsed.success) return { error: "Enter a valid 10-digit phone number." };
+
+  // Invalidate previous OTPs
   await db.oTPVerification.updateMany({
     where: { phone, verified: false },
     data: { verified: true },
@@ -26,9 +51,11 @@ export const sendOTP = async (phone: string) => {
     data: { phone, otp, expiresAt },
   });
 
-  // TODO: integrate SMS provider (Twilio / Fast2SMS / MSG91)
-  // For now, log OTP to server console for testing
-  console.log(`[OTP] Phone: ${phone} | OTP: ${otp}`);
+  try {
+    await sendSMS(phone, otp);
+  } catch {
+    return { error: "Could not send OTP. Please try again." };
+  }
 
   return { success: true };
 };
@@ -51,7 +78,6 @@ export const verifyOTP = async (phone: string, otp: string) => {
     data: { verified: true },
   });
 
-  // Find or create user by phone
   let user = await db.user.findUnique({ where: { phone } });
   if (!user) {
     user = await db.user.create({ data: { phone } });

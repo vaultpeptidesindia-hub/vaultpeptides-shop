@@ -11,7 +11,15 @@ export default async function Navbar() {
       <div className="container mx-auto h-full flex items-center justify-between px-4 lg:px-8">
         {/* Logo */}
         <Link href="/" className="shrink-0">
-          <Image src="/logo.png" alt="Vault Peptides" width={148} height={52} className="object-contain h-10 w-auto" priority />
+          <Image
+            src="/logo.png"
+            alt="Vault Peptides"
+            width={805}
+            height={310}
+            className="h-11 w-auto object-contain"
+            style={{ mixBlendMode: "multiply" }}
+            priority
+          />
         </Link>
 
         {/* Desktop nav links */}

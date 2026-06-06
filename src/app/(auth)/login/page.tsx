@@ -37,7 +37,7 @@ export default function LoginPage() {
 
         <div className="text-center">
           <Link href="/" className="inline-block">
-            <Image src="/logo.png" alt="Vault Peptides" width={180} height={64} className="object-contain h-14 w-auto mx-auto" />
+            <Image src="/logo.png" alt="Vault Peptides" width={805} height={310} className="h-14 w-auto object-contain mx-auto" style={{ mixBlendMode: "multiply" }} />
           </Link>
         </div>
 

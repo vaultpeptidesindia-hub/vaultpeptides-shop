@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 interface ProductCardProps {
   product: {
@@ -15,44 +15,75 @@ interface ProductCardProps {
     images?: string[];
     isFeatured: boolean;
     category?: { name: string };
+    variants?: { id: string; name: string; price: number }[];
   };
 }
 
 export function ProductCard({ product }: ProductCardProps) {
   const mainImage = product.images?.[0] || "/logo.png";
+  const variants = product.variants ?? [];
 
   return (
-    <div className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all flex flex-col">
-      <Link href={`/product/${product.slug}`} className="aspect-square bg-muted relative block overflow-hidden">
+    <div className="group bg-card border border-border rounded-lg overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col">
+      {/* Image */}
+      <Link href={`/product/${product.slug}`} className="relative aspect-square bg-background/50 block overflow-hidden">
         <Image
           src={mainImage}
           alt={product.name}
           fill
-          className="object-cover group-hover:scale-110 transition-transform duration-500"
+          className="object-contain p-6 group-hover:scale-105 transition-transform duration-500"
         />
         {product.isFeatured && (
-          <div className="absolute top-4 left-4 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-widest">
+          <span className="absolute top-3 left-3 text-[9px] font-sans font-medium tracking-widest text-primary/80 uppercase bg-background/80 px-2 py-1 rounded-sm">
             Featured
-          </div>
+          </span>
         )}
       </Link>
-      <div className="p-6 flex flex-col flex-1">
-        <div className="text-xs font-medium text-primary mb-2 uppercase tracking-wider">
+
+      {/* Content */}
+      <div className="p-5 flex flex-col flex-1">
+        {/* Category */}
+        <p className="text-[10px] font-sans tracking-[0.2em] text-muted-foreground uppercase mb-2">
           {product.category?.name}
-        </div>
+        </p>
+
+        {/* Name */}
         <Link href={`/product/${product.slug}`}>
-          <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors line-clamp-1">
+          <h3 className="font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors mb-3 leading-tight">
             {product.name}
           </h3>
         </Link>
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-6 flex-1">
+
+        {/* Variant pills */}
+        {variants.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {variants.map((v) => (
+              <span
+                key={v.id}
+                className="text-[9px] font-sans font-medium tracking-widest text-primary/80 uppercase border border-primary/30 bg-primary/5 px-2 py-0.5 rounded-sm"
+              >
+                {v.name}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Description */}
+        <p className="text-xs font-sans text-foreground/55 line-clamp-3 leading-relaxed mb-5 flex-1">
           {product.description}
         </p>
-        <div className="flex items-center justify-between mt-auto">
-          <span className="text-xl font-bold">From ₹{product.basePrice.toFixed(2)}</span>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
+          <span className="font-serif text-base font-medium text-foreground">
+            From ₹{product.basePrice.toLocaleString("en-IN")}
+          </span>
           <Link href={`/product/${product.slug}`}>
-            <Button size="sm" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-              View <ArrowRight className="h-3 w-3 ml-1" />
+            <Button
+              size="sm"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none text-[10px] tracking-widest font-sans font-medium h-8 px-4 gap-1"
+            >
+              SHOP NOW <ArrowUpRight className="h-3 w-3" />
             </Button>
           </Link>
         </div>

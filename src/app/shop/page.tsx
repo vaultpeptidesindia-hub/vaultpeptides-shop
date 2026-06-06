@@ -1,69 +1,70 @@
 export const dynamic = "force-dynamic";
 
 import Navbar from "@/components/layout/navbar";
+import Footer from "@/components/layout/footer";
 import { db } from "@/lib/db";
 import { ProductCard } from "@/components/shop/product-card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Search, SlidersHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export default async function ShopPage() {
   const products = await db.product.findMany({
     where: { status: "ACTIVE" },
-    include: { category: true },
-    orderBy: { createdAt: "desc" }
+    include: { category: true, variants: { orderBy: { price: "asc" } } },
+    orderBy: { createdAt: "desc" },
   });
 
-  const categories = await db.category.findMany({
-    orderBy: { name: "asc" }
-  });
+  const categories = await db.category.findMany({ orderBy: { name: "asc" } });
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 lg:px-8 py-12">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
-          <div>
-            <h1 className="text-4xl font-bold tracking-tight mb-2">Research Catalog</h1>
-            <p className="text-muted-foreground">Premium research compounds and laboratory chemicals.</p>
+      <main className="flex-1">
+        {/* Header */}
+        <section className="py-16 border-b border-border dot-pattern">
+          <div className="container mx-auto px-4 lg:px-8 text-center">
+            <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-3">Our Products</p>
+            <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-4">
+              Vault Peptides <em>Catalog</em>
+            </h1>
+            <p className="font-sans text-sm text-muted-foreground max-w-lg mx-auto">
+              Every product is strictly tested for purity. You cannot buy items directly on this page — orders are confirmed via WhatsApp.
+            </p>
           </div>
-          <div className="flex items-center gap-4 w-full md:w-auto">
-            <div className="relative flex-1 md:w-80">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search compounds..." className="pl-10 bg-card border-border" />
+        </section>
+
+        {/* Category filter */}
+        <section className="border-b border-border bg-card/40 py-4 sticky top-16 z-30 backdrop-blur-sm">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="flex gap-3 overflow-x-auto no-scrollbar">
+              <button className="shrink-0 text-[10px] font-sans font-medium tracking-widest uppercase px-5 py-2 border border-primary bg-primary text-primary-foreground rounded-none">
+                ALL
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  className="shrink-0 text-[10px] font-sans font-medium tracking-widest uppercase px-5 py-2 border border-border text-foreground/60 hover:border-primary hover:text-primary transition-colors rounded-none"
+                >
+                  {cat.name.toUpperCase()}
+                </button>
+              ))}
             </div>
-            <Button variant="outline" className="border-border">
-              <SlidersHorizontal className="mr-2 h-4 w-4" /> Filters
-            </Button>
           </div>
-        </div>
+        </section>
 
-        <div className="flex gap-4 overflow-x-auto pb-8 mb-4 no-scrollbar">
-          <Badge className="px-6 py-2 bg-primary text-primary-foreground text-sm rounded-full cursor-pointer shrink-0">
-            All Products
-          </Badge>
-          {categories.map((cat) => (
-            <Badge key={cat.id} variant="outline" className="px-6 py-2 border-border hover:border-primary text-sm rounded-full cursor-pointer shrink-0">
-              {cat.name}
-            </Badge>
-          ))}
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-          {products.length === 0 && (
-            <div className="col-span-full py-20 text-center text-muted-foreground italic">
-              No products found in the catalog.
-            </div>
-          )}
-        </div>
+        {/* Grid */}
+        <section className="py-16 container mx-auto px-4 lg:px-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+            {products.length === 0 && (
+              <div className="col-span-full py-24 text-center font-sans text-muted-foreground">
+                No products available yet.
+              </div>
+            )}
+          </div>
+        </section>
       </main>
       <Footer />
     </div>
   );
 }
-
-import Footer from "@/components/layout/footer";

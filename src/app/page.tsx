@@ -1,138 +1,179 @@
 export const dynamic = "force-dynamic";
 
 import Navbar from "@/components/layout/navbar";
+import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Beaker, ShieldCheck, Zap } from "lucide-react";
+import { ArrowDown, ArrowRight, ShieldCheck, FlaskConical, Truck, Award } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/db";
+import { ProductCard } from "@/components/shop/product-card";
 
 export default async function Home() {
   const featuredProducts = await db.product.findMany({
     where: { isFeatured: true, status: "ACTIVE" },
-    take: 4,
-    include: { category: true }
+    take: 6,
+    include: { category: true, variants: { orderBy: { price: "asc" } } },
   });
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      
-      {/* Hero Section */}
-      <section className="relative pt-20 pb-32 overflow-hidden bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background">
-        <div className="container mx-auto px-4 lg:px-8 relative z-10">
-          <div className="max-w-3xl">
-            <Badge className="mb-4 bg-primary/20 text-primary border-primary/30 hover:bg-primary/30">
-              New Research Chemicals Available
-            </Badge>
-            <h1 className="text-5xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight">
-              Unlocking the Future of <span className="text-primary italic">Biotech Research</span>
-            </h1>
-            <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
-              Vault Peptides provides high-purity, laboratory-tested research compounds for scientific exploration. Our commitment to quality ensures reliable results for your R&D projects.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/shop">
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg h-14 px-8">
-                  Browse Products <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 text-lg h-14 px-8">
-                Learn About Purity
+
+      {/* ── Hero ───────────────────────────────────────────── */}
+      <section className="relative min-h-[100svh] flex items-center justify-center dot-pattern overflow-hidden">
+        {/* Spine background image */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+          <Image
+            src="/products/RETATRUTIDE 10mg.png"
+            alt=""
+            width={520}
+            height={900}
+            className="object-contain opacity-20 scale-150"
+            priority
+          />
+        </div>
+
+        {/* Floating particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1.5 h-1.5 rounded-full bg-primary/20"
+              style={{
+                left: `${10 + (i * 7.5) % 80}%`,
+                top: `${15 + (i * 11) % 70}%`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Central card */}
+        <div className="relative z-10 glass-card rounded-2xl p-10 md:p-14 max-w-xl mx-4 text-center shadow-sm">
+          <p className="text-[10px] font-sans font-medium tracking-[0.25em] text-primary/70 uppercase mb-6">
+            Unlock Your Biological Potential
+          </p>
+          <h1 className="font-serif text-5xl md:text-6xl font-light leading-tight text-foreground mb-6">
+            The Backbone<br />
+            <em>of Vitality.</em>
+          </h1>
+          <p className="text-sm font-sans text-foreground/60 leading-relaxed mb-3">
+            Welcome to Vault Peptides. We supply premium, lab-tested peptides designed to support peak physical performance, faster recovery, and healthy ageing.
+          </p>
+          <p className="text-sm font-sans text-foreground/50 leading-relaxed mb-10">
+            Every batch is strictly tested for purity. Explore our catalog to find the highest quality products for your research and wellness journey.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/shop">
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 text-xs tracking-widest font-sans font-medium rounded-none">
+                SHOP NOW <ArrowRight className="ml-2 h-3.5 w-3.5" />
               </Button>
-            </div>
+            </Link>
+            <Link href="/why-vault">
+              <Button variant="outline" className="border-primary/40 text-primary hover:bg-primary/10 h-12 px-8 text-xs tracking-widest font-sans font-medium rounded-none">
+                WHY VAULT
+              </Button>
+            </Link>
           </div>
-        </div>
-        
-        {/* Background elements */}
-        <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px]" />
+          <div className="mt-10 flex justify-center animate-bounce">
+            <ArrowDown className="h-5 w-5 text-primary/40" />
+          </div>
         </div>
       </section>
 
-      {/* Trust Features */}
-      <section className="py-24 bg-card/30 border-y border-border">
+      {/* ── Trust strip ────────────────────────────────────── */}
+      <section className="border-y border-border bg-card/60 py-8">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-2">
-                <ShieldCheck size={32} />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            {[
+              { icon: ShieldCheck, label: "99%+ Purity", sub: "HPLC & MS Certified" },
+              { icon: FlaskConical, label: "Lab Tested", sub: "Every Batch" },
+              { icon: Award, label: "COA Available", sub: "On Request" },
+              { icon: Truck, label: "Fast Shipping", sub: "Pan India" },
+            ].map((item) => (
+              <div key={item.label} className="flex flex-col items-center gap-2">
+                <item.icon className="h-5 w-5 text-primary" />
+                <div className="font-serif text-base font-semibold">{item.label}</div>
+                <div className="text-[11px] font-sans text-muted-foreground tracking-wider uppercase">{item.sub}</div>
               </div>
-              <h3 className="text-xl font-bold">99%+ Purity Guaranteed</h3>
-              <p className="text-muted-foreground">Every batch undergoes rigorous HPLC and MS testing to ensure absolute purity for your research.</p>
-            </div>
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-2">
-                <Beaker size={32} />
-              </div>
-              <h3 className="text-xl font-bold">Scientific Excellence</h3>
-              <p className="text-muted-foreground">Manufactured in state-of-the-art facilities following international laboratory standards.</p>
-            </div>
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-2">
-                <Zap size={32} />
-              </div>
-              <h3 className="text-xl font-bold">Secure Delivery</h3>
-              <p className="text-muted-foreground">Discreet packaging and tracked shipping worldwide to protect your sensitive research materials.</p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="py-32 container mx-auto px-4 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
-          <div>
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Featured Compounds</h2>
-            <p className="text-muted-foreground">Our most popular research peptides and chemicals.</p>
-          </div>
+      {/* ── Featured Products ───────────────────────────────── */}
+      <section className="py-24 container mx-auto px-4 lg:px-8">
+        <div className="text-center mb-16">
+          <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-3">Our Catalog</p>
+          <h2 className="font-serif text-4xl md:text-5xl font-light">Premium Research Compounds</h2>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
           <Link href="/shop">
-            <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10">
-              View all products <ArrowRight className="ml-2 h-4 w-4" />
+            <Button variant="outline" className="border-primary/40 text-primary hover:bg-primary/10 h-12 px-10 text-xs tracking-widest font-sans font-medium rounded-none">
+              VIEW FULL CATALOG <ArrowRight className="ml-2 h-3.5 w-3.5" />
             </Button>
           </Link>
         </div>
-        
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {featuredProducts.length > 0 ? (
-            featuredProducts.map((product) => (
-              <div key={product.id} className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all">
-                <Link href={`/product/${product.slug}`} className="aspect-square bg-muted relative block">
-                  <Image 
-                    src={product.images[0] || "/logo.png"} 
-                    alt={product.name} 
-                    fill 
-                    className="object-cover group-hover:scale-110 transition-transform duration-500" 
-                  />
-                </Link>
-                <div className="p-6">
-                  <div className="text-xs font-medium text-primary mb-2 uppercase tracking-wider">
-                    {product.category.name}
-                  </div>
-                  <h3 className="text-lg font-bold mb-4 group-hover:text-primary transition-colors">
-                    {product.name}
-                  </h3>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold">From ₹{product.basePrice}</span>
-                    <Button size="sm" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                      Details
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full py-12 text-center text-muted-foreground italic">
-              New compounds arriving soon.
+      </section>
+
+      {/* ── Purity section ─────────────────────────────────── */}
+      <section className="py-24 bg-card/40 border-y border-border">
+        <div className="container mx-auto px-4 lg:px-8 max-w-4xl text-center">
+          <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-3">Strict Lab Testing</p>
+          <h2 className="font-serif text-4xl md:text-6xl font-light mb-8">
+            99%+ <em>Purity Standard</em>
+          </h2>
+          <p className="font-sans text-foreground/60 leading-relaxed mb-12 max-w-2xl mx-auto">
+            When it comes to your body and your research, purity is everything. Vault Peptides promises products that are over 99% pure, and we prove it with strict, independent lab testing.
+          </p>
+          <div className="grid md:grid-cols-2 gap-6 text-left">
+            <div className="bg-background border border-border rounded-lg p-8">
+              <h3 className="font-serif text-xl font-semibold mb-4">How We Test Our Products</h3>
+              <p className="font-sans text-sm text-foreground/60 leading-relaxed">
+                We use advanced lab testing methods — HPLC and Mass Spectrometry — on every single batch. This guarantees our peptides have no cheap fillers, damaged molecules, or harmful leftovers from manufacturing.
+              </p>
             </div>
-          )}
+            <div className="bg-background border border-border rounded-lg p-8">
+              <h3 className="font-serif text-xl font-semibold mb-4 text-primary">We Test Everything Twice</h3>
+              <p className="font-sans text-sm text-foreground/60 leading-relaxed">
+                We double-check every single batch. After receiving the product from our manufacturer, we test it again to make absolutely sure it is safe and pure. No fakes. No edited photos. Just pure, honest results.
+              </p>
+            </div>
+          </div>
+          <div className="mt-10">
+            <Link href="/purity">
+              <Button variant="outline" className="border-primary/40 text-primary hover:bg-primary/10 h-12 px-10 text-xs tracking-widest font-sans font-medium rounded-none">
+                LEARN ABOUT PURITY
+              </Button>
+            </Link>
+          </div>
         </div>
+      </section>
+
+      {/* ── CTA ────────────────────────────────────────────── */}
+      <section className="py-24 container mx-auto px-4 lg:px-8 text-center">
+        <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-3">Ready to Start?</p>
+        <h2 className="font-serif text-4xl md:text-5xl font-light mb-6">
+          Explore Our <em>Research Catalog</em>
+        </h2>
+        <p className="font-sans text-foreground/60 mb-10 max-w-lg mx-auto">
+          Browse our complete range of lab-tested peptides and research compounds. Every product ships with a COA on request.
+        </p>
+        <Link href="/shop">
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-12 text-xs tracking-widest font-sans font-medium rounded-none">
+            BROWSE ALL PRODUCTS
+          </Button>
+        </Link>
       </section>
 
       <Footer />
     </div>
   );
 }
-
-import { Badge } from "@/components/ui/badge";
-import Footer from "@/components/layout/footer";

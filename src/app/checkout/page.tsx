@@ -97,8 +97,9 @@ Please confirm my order. Thank you.`;
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1 container mx-auto px-4 lg:px-8 py-12">
-        <h1 className="text-3xl font-bold mb-2 tracking-tight">Checkout</h1>
-        <p className="text-muted-foreground mb-8">Fill in your details and we&apos;ll confirm your order via WhatsApp.</p>
+        <p className="font-sans text-[10px] tracking-[0.25em] text-primary/70 uppercase mb-2">Secure Order</p>
+        <h1 className="font-serif text-4xl font-light mb-2">Checkout</h1>
+        <p className="font-sans text-sm text-muted-foreground mb-10">Fill in your details and confirm your order via WhatsApp.</p>
 
         <form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-12">
           {/* Shipping form */}

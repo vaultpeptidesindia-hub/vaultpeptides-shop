@@ -7,113 +7,82 @@ import { useCart } from "@/store/use-cart";
 import { toast } from "sonner";
 import { COARequestModal } from "@/components/shop/coa-request-modal";
 
-interface Variant {
-  id: string;
-  name: string;
-  price: number;
-  stock: number;
-}
-
+interface Variant { id: string; name: string; price: number; stock: number }
 interface ProductActionsProps {
   product: { id: string; name: string; slug: string; image: string };
   variants: Variant[];
 }
 
 export function ProductActions({ product, variants }: ProductActionsProps) {
-  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(
-    variants[0] ?? null
-  );
+  const [selected, setSelected] = useState<Variant | null>(variants[0] ?? null);
   const [coaOpen, setCoaOpen] = useState(false);
   const { addItem } = useCart();
 
-  const handleAddToCart = () => {
-    if (!selectedVariant) {
-      toast.error("Please select a variant.");
-      return;
-    }
-    if (selectedVariant.stock === 0) {
-      toast.error("This variant is out of stock.");
-      return;
-    }
+  const handleAdd = () => {
+    if (!selected) return;
+    if (selected.stock === 0) { toast.error("Out of stock."); return; }
     addItem({
-      variantId: selectedVariant.id,
+      variantId: selected.id,
       productId: product.id,
       productName: product.name,
-      variantName: selectedVariant.name,
-      price: selectedVariant.price,
+      variantName: selected.name,
+      price: selected.price,
       quantity: 1,
       image: product.image,
     });
-    toast.success(`${product.name} ${selectedVariant.name} added to cart!`);
+    toast.success(`${product.name} ${selected.name} added to cart.`);
   };
 
-  if (variants.length === 0) {
-    return (
-      <p className="text-muted-foreground italic text-sm">
-        No variants available. Please contact us for pricing.
-      </p>
-    );
-  }
+  if (variants.length === 0)
+    return <p className="font-sans text-sm text-muted-foreground italic">Contact us for pricing.</p>;
 
   return (
     <>
-      {/* Variant buttons */}
+      {/* Variant selector */}
       <div className="mb-6">
-        <p className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wider">
-          Select Size
-        </p>
-        <div className="flex flex-wrap gap-3">
-          {variants.map((variant) => (
+        <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-3">Select Size</p>
+        <div className="flex flex-wrap gap-2">
+          {variants.map((v) => (
             <button
-              key={variant.id}
-              onClick={() => setSelectedVariant(variant)}
-              className={`px-5 py-2.5 rounded-xl border text-sm font-bold transition-all ${
-                selectedVariant?.id === variant.id
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "border-border bg-background hover:border-primary/50 text-foreground"
-              } ${variant.stock === 0 ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
-              disabled={variant.stock === 0}
+              key={v.id}
+              onClick={() => setSelected(v)}
+              disabled={v.stock === 0}
+              className={`px-5 py-2 text-xs font-sans font-medium tracking-widest border transition-all rounded-none ${
+                selected?.id === v.id
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border text-foreground hover:border-primary hover:text-primary"
+              } ${v.stock === 0 ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
             >
-              {variant.name}
-              {variant.stock === 0 && (
-                <span className="ml-1.5 text-xs font-normal">(OOS)</span>
-              )}
+              {v.name.toUpperCase()}{v.stock === 0 ? " (OOS)" : ""}
             </button>
           ))}
         </div>
-        {selectedVariant && (
-          <p className="mt-3 text-2xl font-bold text-primary">
-            ₹{selectedVariant.price.toFixed(2)}
+        {selected && (
+          <p className="font-serif text-2xl font-medium text-foreground mt-4">
+            ₹{selected.price.toLocaleString("en-IN")}
           </p>
         )}
       </div>
 
-      {/* Action buttons */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      {/* Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3">
         <Button
-          size="lg"
-          onClick={handleAddToCart}
-          disabled={!selectedVariant || selectedVariant.stock === 0}
-          className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 h-16 text-lg"
+          onClick={handleAdd}
+          disabled={!selected || selected.stock === 0}
+          className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 h-12 rounded-none font-sans text-xs tracking-widest"
         >
-          <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
+          <ShoppingCart className="mr-2 h-4 w-4" /> ADD TO CART
         </Button>
         <Button
-          size="lg"
           variant="outline"
           onClick={() => setCoaOpen(true)}
-          className="flex-1 border-primary text-primary hover:bg-primary/10 h-16 text-lg"
+          className="flex-1 border-border text-foreground hover:border-primary hover:text-primary h-12 rounded-none font-sans text-xs tracking-widest"
         >
-          <FileText className="mr-2 h-5 w-5" /> Request COA
+          <FileText className="mr-2 h-4 w-4" /> REQUEST COA
         </Button>
       </div>
 
-      <COARequestModal
-        open={coaOpen}
-        onClose={() => setCoaOpen(false)}
-        productName={product.name}
-        productId={product.id}
-      />
+      <COARequestModal open={coaOpen} onClose={() => setCoaOpen(false)} productName={product.name} productId={product.id} />
     </>
   );
 }

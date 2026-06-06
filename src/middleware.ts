@@ -9,8 +9,10 @@ export default auth((req) => {
 
   const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth");
   const isPublicRoute =
-    ["/", "/shop", "/cart", "/checkout", "/wholesale", "/about", "/contact"].includes(nextUrl.pathname) ||
-    nextUrl.pathname.startsWith("/product/");
+    ["/", "/shop", "/cart", "/checkout", "/wholesale", "/contact", "/why-vault", "/purity", "/research", "/verify-batch", "/faq"].includes(nextUrl.pathname) ||
+    nextUrl.pathname.startsWith("/product/") ||
+    nextUrl.pathname.startsWith("/research/") ||
+    nextUrl.pathname.startsWith("/api/batch/");
   const isAuthRoute = ["/login", "/signup", "/forgot-password"].includes(nextUrl.pathname);
 
   const isAdminRoute = nextUrl.pathname.startsWith("/admin");

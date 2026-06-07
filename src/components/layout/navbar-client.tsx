@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { ShoppingCart, User, LayoutDashboard, ShoppingBag, LogOut, Settings, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,11 +14,13 @@ import { useCart } from "@/store/use-cart";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 interface NavbarClientProps {
   isLoggedIn: boolean;
   isAdmin: boolean;
   userName: string | null;
+  dbCartCount: number; // DB cart count for logged-in users
 }
 
 const MOBILE_LINKS = [
@@ -31,17 +32,17 @@ const MOBILE_LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function NavbarClient({ isLoggedIn, isAdmin, userName }: NavbarClientProps) {
-  const items = useCart((s) => s.items);
+export function NavbarClient({ isLoggedIn, isAdmin, userName, dbCartCount }: NavbarClientProps) {
+  const guestItems = useCart((s) => s.items);
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  // Hydration guard — Zustand reads localStorage only on client
   const [mounted, setMounted] = useState(false);
+
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true); }, []);
 
-  // Show distinct item count (number of different products), not total quantity
-  const cartCount = mounted ? items.length : 0;
+  // Logged-in users: use DB count (accurate). Guest: use Zustand item count.
+  const cartCount = isLoggedIn ? dbCartCount : (mounted ? guestItems.length : 0);
 
   return (
     <>
@@ -58,7 +59,7 @@ export function NavbarClient({ isLoggedIn, isAdmin, userName }: NavbarClientProp
           </Button>
         </Link>
 
-        {/* Login / Account */}
+        {/* Account */}
         {isLoggedIn ? (
           <DropdownMenu>
             <DropdownMenuTrigger render={
@@ -93,10 +94,7 @@ export function NavbarClient({ isLoggedIn, isAdmin, userName }: NavbarClientProp
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          /*
-           * DO NOT wrap <Button> inside <Link> — that creates <a><button> (invalid HTML)
-           * and browsers silently swallow clicks. Use router.push() instead.
-           */
+          // router.push avoids the invalid <a><button> nesting issue
           <Button
             variant="ghost"
             size="sm"
@@ -134,12 +132,11 @@ export function NavbarClient({ isLoggedIn, isAdmin, userName }: NavbarClientProp
                 {link.label.toUpperCase()}
               </Link>
             ))}
-            {/* Login / account in mobile menu */}
             <div className="pt-4 mt-2">
               {isLoggedIn ? (
                 <button
                   onClick={() => { setMobileOpen(false); signOut({ callbackUrl: "/" }); }}
-                  className="w-full text-left py-3 text-sm font-medium tracking-widest text-destructive hover:opacity-80 transition-opacity"
+                  className="w-full text-left py-3 text-sm font-medium tracking-widest text-destructive"
                 >
                   LOGOUT
                 </button>

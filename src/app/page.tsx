@@ -16,7 +16,8 @@ export default async function Home() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ backgroundColor: "#F5EDE0" }}>
+    // Outer div has no background — the fixed 3D spine canvas shows through the hero section
+    <div className="flex flex-col min-h-screen">
       <Navbar />
 
       {/* ── Hero — transparent so the 3D spine shows through ── */}

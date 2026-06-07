@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
 import Link from "next/link";
-import { login } from "@/actions/login";
+import { loginAction } from "@/actions/login";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,39 +10,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import Image from "next/image";
 
 export default function LoginPage() {
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    const fd = new FormData(e.currentTarget);
-    try {
-      const res = await login({
-        email: fd.get("email") as string,
-        password: fd.get("password") as string,
-      });
-      // If res has an error, show it. Otherwise the server action redirects automatically.
-      if (res?.error) {
-        setError(res.error);
-        setLoading(false);
-      }
-      // No else — on success, NextAuth redirects to /dashboard via the server action
-    } catch {
-      setError("Something went wrong. Please try again.");
-      setLoading(false);
-    }
-  };
+  const [state, formAction, isPending] = useActionState(loginAction, { error: "" });
 
   return (
-    <div
-      className="flex min-h-screen items-center justify-center p-4"
-      style={{ backgroundColor: "#F5EDE0" }}
-    >
+    <div className="flex min-h-screen items-center justify-center p-4" style={{ backgroundColor: "#F5EDE0" }}>
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <Link href="/" className="inline-block">
+          <Link href="/">
             <Image
               src="/logo.png"
               alt="Vault Peptides"
@@ -54,19 +28,20 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <div className="bg-card border border-border rounded-2xl p-8 space-y-5" style={{ backgroundColor: "#EDE1CE" }}>
+        <div className="rounded-2xl p-8 space-y-5 border border-border" style={{ backgroundColor: "#EDE1CE" }}>
           <div>
             <h1 className="text-2xl font-bold tracking-tight" style={{ color: "#1A0E05" }}>Welcome back</h1>
             <p className="text-sm mt-1" style={{ color: "#3D2510" }}>Sign in to your Vault Peptides account</p>
           </div>
 
-          {error && (
+          {state.error && (
             <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>{state.error}</AlertDescription>
             </Alert>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Native form action — useActionState handles NEXT_REDIRECT correctly */}
+          <form action={formAction} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" style={{ color: "#3D2510" }}>Email</Label>
               <Input
@@ -75,29 +50,29 @@ export default function LoginPage() {
                 type="email"
                 placeholder="you@example.com"
                 required
+                autoComplete="email"
                 className="h-12"
                 style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }}
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password" style={{ color: "#3D2510" }}>Password</Label>
-              </div>
+              <Label htmlFor="password" style={{ color: "#3D2510" }}>Password</Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 required
+                autoComplete="current-password"
                 className="h-12"
                 style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }}
               />
             </div>
             <Button
               type="submit"
-              disabled={loading}
+              disabled={isPending}
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-12"
             >
-              {loading ? "Signing in…" : "Sign In"}
+              {isPending ? "Signing in…" : "Sign In"}
             </Button>
           </form>
 

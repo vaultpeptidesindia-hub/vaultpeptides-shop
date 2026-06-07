@@ -2,21 +2,18 @@
 
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
-import { z } from "zod";
 
-const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
+// Compatible with React 19 useActionState
+export async function loginAction(
+  _prevState: { error: string },
+  formData: FormData
+): Promise<{ error: string }> {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
-  const validatedFields = LoginSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    return { error: "Invalid fields!" };
+  if (!email || !password) {
+    return { error: "Email and password are required." };
   }
-
-  const { email, password } = validatedFields.data;
 
   try {
     await signIn("credentials", {
@@ -28,12 +25,14 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return { error: "Invalid credentials!" };
+          return { error: "Invalid email or password. Check your credentials." };
         default:
-          return { error: "Something went wrong!" };
+          return { error: "Something went wrong. Please try again." };
       }
     }
-
+    // Re-throw NEXT_REDIRECT so Next.js handles the navigation
     throw error;
   }
-};
+
+  return { error: "" };
+}

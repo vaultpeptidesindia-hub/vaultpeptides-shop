@@ -96,21 +96,12 @@ export function ProductClientSection({
     setAdding(true);
     try {
       if (isLoggedIn) {
-        // Logged-in users: write to DB cart
+        // Logged-in users: write to DB only — Zustand is for guests only.
+        // Mixing both caused badge count to be wrong (Zustand had stale extras).
         const res = await addToCart(selected.id, 1);
         if (res.error) {
           toast.error(res.error);
         } else {
-          // Also update local Zustand for instant UI feedback
-          addItem({
-            variantId: selected.id,
-            productId: product.id,
-            productName: product.name,
-            variantName: selected.name,
-            price: selected.price,
-            quantity: 1,
-            image: currentImage,
-          });
           toast.success(`${product.name} ${selected.name} added to cart.`);
         }
       } else {

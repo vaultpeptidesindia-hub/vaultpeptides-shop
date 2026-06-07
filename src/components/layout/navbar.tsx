@@ -7,16 +7,16 @@ export default async function Navbar() {
   const session = await auth();
 
   return (
-    <nav className="h-16 border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-50">
+    <nav className="h-20 border-b border-border bg-background/95 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto h-full flex items-center justify-between px-4 lg:px-8">
-        {/* Logo */}
+        {/* Logo — larger and more prominent */}
         <Link href="/" className="shrink-0">
           <Image
             src="/logo.png"
             alt="Vault Peptides"
             width={805}
             height={310}
-            className="h-11 w-auto object-contain"
+            className="h-14 w-auto object-contain"
             style={{ mixBlendMode: "multiply" }}
             priority
           />
@@ -35,7 +35,7 @@ export default async function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-xs font-medium tracking-[0.12em] text-foreground/70 hover:text-primary transition-colors"
+              className="text-xs font-sans font-medium tracking-[0.12em] text-foreground/70 hover:text-primary transition-colors"
             >
               {link.label}
             </Link>

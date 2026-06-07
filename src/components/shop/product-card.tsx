@@ -23,6 +23,10 @@ export function ProductCard({ product }: ProductCardProps) {
   const mainImage = product.images?.[0] || "/logo.png";
   const variants = product.variants ?? [];
 
+  // Sale price = basePrice, original = 20% higher
+  const salePrice = product.basePrice;
+  const originalPrice = Math.round(salePrice * 1.2);
+
   return (
     <div className="group bg-card border border-border rounded-lg overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col">
       {/* Image */}
@@ -33,6 +37,10 @@ export function ProductCard({ product }: ProductCardProps) {
           fill
           className="object-contain p-6 group-hover:scale-105 transition-transform duration-500"
         />
+        {/* Sale badge */}
+        <span className="absolute top-3 right-3 text-[9px] font-sans font-semibold tracking-widest text-white uppercase bg-green-600 px-2 py-1 rounded-sm">
+          20% OFF
+        </span>
         {product.isFeatured && (
           <span className="absolute top-3 left-3 text-[9px] font-sans font-medium tracking-widest text-primary/80 uppercase bg-background/80 px-2 py-1 rounded-sm">
             Featured
@@ -69,15 +77,22 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
 
         {/* Description */}
-        <p className="text-xs font-sans text-foreground/55 line-clamp-3 leading-relaxed mb-5 flex-1">
+        <p className="text-xs font-sans text-foreground/60 line-clamp-3 leading-relaxed mb-5 flex-1">
           {product.description}
         </p>
 
         {/* Footer */}
         <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
-          <span className="font-serif text-base font-medium text-foreground">
-            From ₹{product.basePrice.toLocaleString("en-IN")}
-          </span>
+          <div>
+            <div className="flex items-baseline gap-2">
+              <span className="font-serif text-base font-semibold text-foreground">
+                From ₹{salePrice.toLocaleString("en-IN")}
+              </span>
+              <span className="font-sans text-xs text-muted-foreground line-through">
+                ₹{originalPrice.toLocaleString("en-IN")}
+              </span>
+            </div>
+          </div>
           <Link href={`/product/${product.slug}`}>
             <Button
               size="sm"

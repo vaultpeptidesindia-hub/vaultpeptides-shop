@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/auth";
 import { CartSync } from "@/components/shop/cart-sync";
 import { SpineLoader } from "@/components/spine-loader";
+import { WhatsAppButton } from "@/components/whatsapp-button";
 
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
@@ -48,6 +49,7 @@ export default async function RootLayout({
         <div style={{ position: "relative", zIndex: 10 }} className="flex flex-col min-h-full">
           {children}
         </div>
+        <WhatsAppButton />
         <Toaster position="top-center" richColors />
       </body>
     </html>

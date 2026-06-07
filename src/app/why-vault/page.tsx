@@ -1,6 +1,6 @@
 import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
-import { ShieldCheck, FlaskConical, Search, Award, Microscope, Leaf } from "lucide-react";
+import { ShieldCheck, FlaskConical, Award, Microscope, Leaf, BadgeCheck } from "lucide-react";
+import { COATrustSection } from "@/components/coa-trust-section";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -20,9 +20,9 @@ const PILLARS = [
     body: "We test once at the manufacturer, and test again independently upon receipt. Two separate labs, two separate reports, one standard: perfect.",
   },
   {
-    icon: Search,
-    title: "Full Batch Transparency",
-    body: "Every product ships with a traceable batch number. Customers can verify their batch independently on our platform.",
+    icon: BadgeCheck,
+    title: "Global COA Standard — Coming Soon",
+    body: "We are partnering with Freedom Diagnostics (USA) for internationally verifiable COAs, complete with actual vial photographs. Full transparency at every level.",
   },
   {
     icon: Award,
@@ -50,10 +50,10 @@ export default function WhyVaultPage() {
         <section className="py-24 dot-pattern border-b border-border">
           <div className="container mx-auto px-4 lg:px-8 max-w-3xl text-center">
             <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-4">Our Philosophy</p>
-            <h1 className="font-serif text-5xl md:text-6xl font-light leading-tight mb-6">
+            <h1 className="font-serif text-5xl md:text-6xl font-light leading-tight mb-6 text-foreground">
               Why <em>Vault Peptides?</em>
             </h1>
-            <p className="font-sans text-foreground/60 leading-relaxed">
+            <p className="font-sans text-foreground/65 leading-relaxed">
               In a market full of inconsistency, we built Vault Peptides on a single principle: you deserve to know exactly what you&apos;re getting. Full transparency, verified purity, every time.
             </p>
           </div>
@@ -65,24 +65,26 @@ export default function WhyVaultPage() {
             {PILLARS.map((p) => (
               <div key={p.title} className="bg-card border border-border rounded-lg p-8 hover:shadow-sm transition-shadow">
                 <p.icon className="h-6 w-6 text-primary mb-5" />
-                <h3 className="font-serif text-xl font-semibold mb-3">{p.title}</h3>
-                <p className="font-sans text-sm text-foreground/60 leading-relaxed">{p.body}</p>
+                <h3 className="font-serif text-xl font-semibold mb-3 text-foreground">{p.title}</h3>
+                <p className="font-sans text-sm text-foreground/65 leading-relaxed">{p.body}</p>
               </div>
             ))}
           </div>
         </section>
 
+        {/* COA Trust Section */}
+        <COATrustSection />
+
         {/* Quote */}
         <section className="py-20 bg-card/50 border-y border-border">
           <div className="container mx-auto px-4 lg:px-8 max-w-2xl text-center">
             <p className="font-serif text-2xl md:text-3xl font-light italic text-foreground leading-relaxed">
-              &ldquo;No fakes. No edited photos. Just pure, honest results — directly verifiable by you.&rdquo;
+              &ldquo;No fakes. No edited reports. Just pure, honest results — independently verifiable by you.&rdquo;
             </p>
             <p className="font-sans text-xs tracking-widest text-muted-foreground uppercase mt-6">— Vault Peptides Promise</p>
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 }

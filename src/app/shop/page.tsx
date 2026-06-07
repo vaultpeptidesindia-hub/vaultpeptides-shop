@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 
 import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
 import { db } from "@/lib/db";
 import { ProductCard } from "@/components/shop/product-card";
 
@@ -25,8 +24,8 @@ export default async function ShopPage() {
             <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-4">
               Vault Peptides <em>Catalog</em>
             </h1>
-            <p className="font-sans text-sm text-muted-foreground max-w-lg mx-auto">
-              Every product is strictly tested for purity. You cannot buy items directly on this page — orders are confirmed via WhatsApp.
+            <p className="font-sans text-sm text-foreground/65 max-w-lg mx-auto">
+              Every product is strictly tested for purity. Browse our full range of lab-verified research peptides and blends.
             </p>
           </div>
         </section>
@@ -41,7 +40,7 @@ export default async function ShopPage() {
               {categories.map((cat) => (
                 <button
                   key={cat.id}
-                  className="shrink-0 text-[10px] font-sans font-medium tracking-widest uppercase px-5 py-2 border border-border text-foreground/60 hover:border-primary hover:text-primary transition-colors rounded-none"
+                  className="shrink-0 text-[10px] font-sans font-medium tracking-widest uppercase px-5 py-2 border border-border text-foreground/70 hover:border-primary hover:text-primary transition-colors rounded-none"
                 >
                   {cat.name.toUpperCase()}
                 </button>
@@ -64,7 +63,6 @@ export default async function ShopPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 }

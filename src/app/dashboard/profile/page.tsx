@@ -4,7 +4,6 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -71,7 +70,6 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </main>
-      <Footer />
     </div>
   );
 }

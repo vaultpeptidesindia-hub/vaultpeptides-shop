@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, CheckCircle2, XCircle } from "lucide-react";
@@ -101,7 +100,6 @@ export default function VerifyBatchPage() {
           </section>
         )}
       </main>
-      <Footer />
     </div>
   );
 }

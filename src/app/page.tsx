@@ -1,12 +1,12 @@
 export const dynamic = "force-dynamic";
 
 import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowRight, ShieldCheck, FlaskConical, Truck, Award } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { ProductCard } from "@/components/shop/product-card";
+import { COATrustSection } from "@/components/coa-trust-section";
 
 export default async function Home() {
   const featuredProducts = await db.product.findMany({
@@ -30,10 +30,10 @@ export default async function Home() {
             The Backbone<br />
             <em>of Vitality.</em>
           </h1>
-          <p className="text-sm font-sans text-foreground/60 leading-relaxed mb-3">
+          <p className="text-sm font-sans text-foreground/70 leading-relaxed mb-3">
             Welcome to Vault Peptides. We supply premium, lab-tested peptides designed to support peak physical performance, faster recovery, and healthy ageing.
           </p>
-          <p className="text-sm font-sans text-foreground/50 leading-relaxed mb-10">
+          <p className="text-sm font-sans text-foreground/60 leading-relaxed mb-10">
             Every batch is strictly tested for purity. Explore our catalog to find the highest quality products for your research and wellness journey.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -66,7 +66,7 @@ export default async function Home() {
             ].map((item) => (
               <div key={item.label} className="flex flex-col items-center gap-2">
                 <item.icon className="h-5 w-5 text-primary" />
-                <div className="font-serif text-base font-semibold">{item.label}</div>
+                <div className="font-serif text-base font-semibold text-foreground">{item.label}</div>
                 <div className="text-[11px] font-sans text-muted-foreground tracking-wider uppercase">{item.sub}</div>
               </div>
             ))}
@@ -78,7 +78,7 @@ export default async function Home() {
       <section className="py-24 container mx-auto px-4 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-3">Our Catalog</p>
-          <h2 className="font-serif text-4xl md:text-5xl font-light">Premium Research Compounds</h2>
+          <h2 className="font-serif text-4xl md:text-5xl font-light text-foreground">Premium Research Compounds</h2>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -96,26 +96,29 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ── COA Trust Section ───────────────────────────────── */}
+      <COATrustSection />
+
       {/* ── Purity section ─────────────────────────────────── */}
       <section className="py-24 bg-card/40 border-y border-border">
         <div className="container mx-auto px-4 lg:px-8 max-w-4xl text-center">
           <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-3">Strict Lab Testing</p>
-          <h2 className="font-serif text-4xl md:text-6xl font-light mb-8">
+          <h2 className="font-serif text-4xl md:text-6xl font-light mb-8 text-foreground">
             99%+ <em>Purity Standard</em>
           </h2>
-          <p className="font-sans text-foreground/60 leading-relaxed mb-12 max-w-2xl mx-auto">
+          <p className="font-sans text-foreground/65 leading-relaxed mb-12 max-w-2xl mx-auto">
             When it comes to your body and your research, purity is everything. Vault Peptides promises products that are over 99% pure, and we prove it with strict, independent lab testing.
           </p>
           <div className="grid md:grid-cols-2 gap-6 text-left">
             <div className="bg-background border border-border rounded-lg p-8">
-              <h3 className="font-serif text-xl font-semibold mb-4">How We Test Our Products</h3>
-              <p className="font-sans text-sm text-foreground/60 leading-relaxed">
+              <h3 className="font-serif text-xl font-semibold mb-4 text-foreground">How We Test Our Products</h3>
+              <p className="font-sans text-sm text-foreground/65 leading-relaxed">
                 We use advanced lab testing methods — HPLC and Mass Spectrometry — on every single batch. This guarantees our peptides have no cheap fillers, damaged molecules, or harmful leftovers from manufacturing.
               </p>
             </div>
             <div className="bg-background border border-border rounded-lg p-8">
               <h3 className="font-serif text-xl font-semibold mb-4 text-primary">We Test Everything Twice</h3>
-              <p className="font-sans text-sm text-foreground/60 leading-relaxed">
+              <p className="font-sans text-sm text-foreground/65 leading-relaxed">
                 We double-check every single batch. After receiving the product from our manufacturer, we test it again to make absolutely sure it is safe and pure. No fakes. No edited photos. Just pure, honest results.
               </p>
             </div>
@@ -133,10 +136,10 @@ export default async function Home() {
       {/* ── CTA ────────────────────────────────────────────── */}
       <section className="py-24 container mx-auto px-4 lg:px-8 text-center">
         <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-3">Ready to Start?</p>
-        <h2 className="font-serif text-4xl md:text-5xl font-light mb-6">
+        <h2 className="font-serif text-4xl md:text-5xl font-light mb-6 text-foreground">
           Explore Our <em>Research Catalog</em>
         </h2>
-        <p className="font-sans text-foreground/60 mb-10 max-w-lg mx-auto">
+        <p className="font-sans text-foreground/65 mb-10 max-w-lg mx-auto">
           Browse our complete range of lab-tested peptides and research compounds. Every product ships with a COA on request.
         </p>
         <Link href="/shop">
@@ -145,8 +148,6 @@ export default async function Home() {
           </Button>
         </Link>
       </section>
-
-      <Footer />
     </div>
   );
 }

@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { processCheckout } from "@/actions/checkout";
 import { toast } from "sonner";
 import { useCart } from "@/store/use-cart";
-import Footer from "@/components/layout/footer";
 import { MessageCircle } from "lucide-react";
+import { COATrustSection } from "@/components/coa-trust-section";
 
 export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
@@ -196,8 +196,12 @@ Please confirm my order. Thank you.`;
             </Card>
           </div>
         </form>
+
+        {/* COA Trust reassurance at checkout */}
+        <div className="mt-12">
+          <COATrustSection compact />
+        </div>
       </main>
-      <Footer />
     </div>
   );
 }

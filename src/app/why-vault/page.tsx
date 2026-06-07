@@ -43,32 +43,34 @@ const PILLARS = [
 
 export default function WhyVaultPage() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen" style={{ backgroundColor: "#F5EDE0" }}>
       <Navbar />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="py-24 dot-pattern border-b border-border">
+        {/* Hero — solid background so text is always readable */}
+        <section style={{ backgroundColor: "#F5EDE0" }} className="py-24 border-b border-border">
           <div className="container mx-auto px-4 lg:px-8 max-w-3xl text-center">
             <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-4">Our Philosophy</p>
-            <h1 className="font-serif text-5xl md:text-6xl font-light leading-tight mb-6 text-foreground">
+            <h1 className="font-serif text-5xl md:text-6xl font-light leading-tight mb-6" style={{ color: "#1A0E05" }}>
               Why <em>Vault Peptides?</em>
             </h1>
-            <p className="font-sans text-foreground/65 leading-relaxed">
+            <p className="font-sans leading-relaxed" style={{ color: "#3D2510" }}>
               In a market full of inconsistency, we built Vault Peptides on a single principle: you deserve to know exactly what you&apos;re getting. Full transparency, verified purity, every time.
             </p>
           </div>
         </section>
 
         {/* Pillars */}
-        <section className="py-24 container mx-auto px-4 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {PILLARS.map((p) => (
-              <div key={p.title} className="bg-card border border-border rounded-lg p-8 hover:shadow-sm transition-shadow">
-                <p.icon className="h-6 w-6 text-primary mb-5" />
-                <h3 className="font-serif text-xl font-semibold mb-3 text-foreground">{p.title}</h3>
-                <p className="font-sans text-sm text-foreground/65 leading-relaxed">{p.body}</p>
-              </div>
-            ))}
+        <section style={{ backgroundColor: "#F5EDE0" }} className="py-24">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {PILLARS.map((p) => (
+                <div key={p.title} className="bg-card border border-border rounded-lg p-8 hover:shadow-sm transition-shadow">
+                  <p.icon className="h-6 w-6 text-primary mb-5" />
+                  <h3 className="font-serif text-xl font-semibold mb-3" style={{ color: "#1A0E05" }}>{p.title}</h3>
+                  <p className="font-sans text-sm leading-relaxed" style={{ color: "#3D2510" }}>{p.body}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -76,12 +78,12 @@ export default function WhyVaultPage() {
         <COATrustSection />
 
         {/* Quote */}
-        <section className="py-20 bg-card/50 border-y border-border">
+        <section style={{ backgroundColor: "#EDE1CE" }} className="py-20 border-y border-border">
           <div className="container mx-auto px-4 lg:px-8 max-w-2xl text-center">
-            <p className="font-serif text-2xl md:text-3xl font-light italic text-foreground leading-relaxed">
+            <p className="font-serif text-2xl md:text-3xl font-light italic leading-relaxed" style={{ color: "#1A0E05" }}>
               &ldquo;No fakes. No edited reports. Just pure, honest results — independently verifiable by you.&rdquo;
             </p>
-            <p className="font-sans text-xs tracking-widest text-muted-foreground uppercase mt-6">— Vault Peptides Promise</p>
+            <p className="font-sans text-xs tracking-widest uppercase mt-6" style={{ color: "#6B5A42" }}>— Vault Peptides Promise</p>
           </div>
         </section>
       </main>

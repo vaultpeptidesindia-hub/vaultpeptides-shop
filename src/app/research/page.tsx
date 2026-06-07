@@ -22,35 +22,38 @@ const ARTICLES = [
 
 export default function ResearchPage() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen" style={{ backgroundColor: "#F5EDE0" }}>
       <Navbar />
       <main className="flex-1">
-        <section className="py-24 dot-pattern border-b border-border">
+        {/* Hero — solid bg */}
+        <section style={{ backgroundColor: "#F5EDE0" }} className="py-24 border-b border-border">
           <div className="container mx-auto px-4 lg:px-8 max-w-3xl text-center">
             <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-4">Knowledge Center</p>
-            <h1 className="font-serif text-5xl font-light mb-6 text-foreground">Research <em>Hub</em></h1>
-            <p className="font-sans text-sm text-foreground/65">
+            <h1 className="font-serif text-5xl font-light mb-6" style={{ color: "#1A0E05" }}>Research <em>Hub</em></h1>
+            <p className="font-sans text-sm" style={{ color: "#3D2510" }}>
               Scientific overviews of the peptides and blends we carry. For educational and research purposes only.
             </p>
           </div>
         </section>
 
-        <section className="py-16 container mx-auto px-4 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {ARTICLES.map((article) => (
-              <Link
-                key={article.slug}
-                href={`/research/${article.slug}`}
-                className="group bg-card border border-border rounded-lg p-7 hover:shadow-sm hover:border-primary/30 transition-all"
-              >
-                <p className="text-[10px] font-sans tracking-widest text-primary/60 uppercase mb-2">{article.sub}</p>
-                <h2 className="font-serif text-xl font-medium group-hover:text-primary transition-colors mb-3 text-foreground">{article.title}</h2>
-                <p className="font-sans text-xs text-foreground/60 leading-relaxed mb-4">{article.desc}</p>
-                <div className="flex items-center gap-1 text-xs font-sans text-primary font-medium">
-                  Read more <ArrowRight className="h-3 w-3" />
-                </div>
-              </Link>
-            ))}
+        <section style={{ backgroundColor: "#F5EDE0" }} className="py-16">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {ARTICLES.map((article) => (
+                <Link
+                  key={article.slug}
+                  href={`/research/${article.slug}`}
+                  className="group bg-card border border-border rounded-lg p-7 hover:shadow-sm hover:border-primary/30 transition-all"
+                >
+                  <p className="text-[10px] font-sans tracking-widest text-primary/60 uppercase mb-2">{article.sub}</p>
+                  <h2 className="font-serif text-xl font-medium group-hover:text-primary transition-colors mb-3" style={{ color: "#1A0E05" }}>{article.title}</h2>
+                  <p className="font-sans text-xs leading-relaxed mb-4" style={{ color: "#3D2510" }}>{article.desc}</p>
+                  <div className="flex items-center gap-1 text-xs font-sans text-primary font-medium">
+                    Read more <ArrowRight className="h-3 w-3" />
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       </main>

@@ -19,10 +19,10 @@ export default async function Home() {
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: "#F5EDE0" }}>
       <Navbar />
 
-      {/* ── Hero ───────────────────────────────────────────── */}
-      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden" style={{ backgroundColor: "#F5EDE0" }}>
-        {/* Central card — glass but very opaque so text is always readable */}
-        <div className="relative z-10 rounded-2xl p-10 md:p-14 max-w-xl mx-4 text-center shadow-lg border border-border" style={{ backgroundColor: "rgba(245,237,224,0.97)" }}>
+      {/* ── Hero — transparent so the 3D spine shows through ── */}
+      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
+        {/* Central card — high opacity so text stays readable over the spine */}
+        <div className="relative z-10 rounded-2xl p-10 md:p-14 max-w-xl mx-4 text-center shadow-lg border border-border" style={{ backgroundColor: "rgba(245,237,224,0.92)" }}>
           <p className="text-[10px] font-sans font-medium tracking-[0.25em] text-primary/70 uppercase mb-6">
             Unlock Your Biological Potential
           </p>

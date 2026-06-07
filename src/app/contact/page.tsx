@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Navbar from "@/components/layout/navbar";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,18 +13,17 @@ export default function ContactPage() {
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleWhatsApp = () => {
-    if (!name || !message) return;
-    const text = `Hello Vault Peptides,\n\nName: ${name}\nEmail: ${email}\n\nMessage: ${message}`;
-    window.open(`https://wa.me/918722579999?text=${encodeURIComponent(text)}`, "_blank");
-    setSubmitted(true);
-  };
+  const whatsappText = encodeURIComponent(
+    `Hello Vault Peptides,\n\nName: ${name}\nEmail: ${email}\n\nMessage: ${message}`
+  );
+  const whatsappUrl = `https://wa.me/918722579999?text=${whatsappText}`;
+  const canSend = name.trim().length > 0 && message.trim().length > 0;
 
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: "#F5EDE0" }}>
       <Navbar />
       <main className="flex-1">
-        {/* Hero — solid bg */}
+        {/* Hero */}
         <section style={{ backgroundColor: "#F5EDE0" }} className="py-24 border-b border-border">
           <div className="container mx-auto px-4 lg:px-8 max-w-2xl text-center">
             <p className="text-[10px] font-sans tracking-[0.25em] text-primary/70 uppercase mb-4">Get in Touch</p>
@@ -37,6 +35,7 @@ export default function ContactPage() {
         <section style={{ backgroundColor: "#F5EDE0" }} className="py-20">
           <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
             <div className="grid md:grid-cols-2 gap-12">
+
               {/* Contact info */}
               <div className="space-y-6">
                 <h2 className="font-serif text-2xl font-medium" style={{ color: "#1A0E05" }}>Reach Us Directly</h2>
@@ -81,8 +80,8 @@ export default function ContactPage() {
 
                 <div className="p-5 bg-card border border-border rounded-lg">
                   <p className="font-sans text-xs italic leading-relaxed" style={{ color: "#6B5A42" }}>
-                    Vault Peptides products are for laboratory research use only. We do not provide medical advice.
-                    For product inquiries, order support, or COA requests, message us directly via WhatsApp.
+                    Vault Peptides products are for laboratory research use only. For product inquiries,
+                    order support, or COA requests, message us directly via WhatsApp.
                   </p>
                 </div>
               </div>
@@ -93,16 +92,16 @@ export default function ContactPage() {
                   <CheckCircle2 className="h-12 w-12 text-primary mb-4" />
                   <h3 className="font-serif text-2xl font-medium mb-2" style={{ color: "#1A0E05" }}>Message Sent!</h3>
                   <p className="font-sans text-sm" style={{ color: "#3D2510" }}>
-                    Your message has been sent via WhatsApp. We&apos;ll get back to you shortly.
+                    Your message was opened in WhatsApp. We&apos;ll get back to you shortly.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-5">
                   <h2 className="font-serif text-2xl font-medium" style={{ color: "#1A0E05" }}>Send a Message</h2>
+
                   <div className="space-y-2">
                     <Label className="font-sans text-xs tracking-widest uppercase" style={{ color: "#3D2510" }}>Name *</Label>
                     <Input
-                      required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="John Doe"
@@ -110,6 +109,7 @@ export default function ContactPage() {
                       style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }}
                     />
                   </div>
+
                   <div className="space-y-2">
                     <Label className="font-sans text-xs tracking-widest uppercase" style={{ color: "#3D2510" }}>Email</Label>
                     <Input
@@ -121,10 +121,10 @@ export default function ContactPage() {
                       style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }}
                     />
                   </div>
+
                   <div className="space-y-2">
                     <Label className="font-sans text-xs tracking-widest uppercase" style={{ color: "#3D2510" }}>Message *</Label>
                     <Textarea
-                      required
                       rows={5}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
@@ -133,17 +133,24 @@ export default function ContactPage() {
                       style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }}
                     />
                   </div>
-                  <Button
-                    onClick={handleWhatsApp}
-                    disabled={!name || !message}
-                    className="w-full h-12 rounded-none font-sans text-xs tracking-widest"
-                    style={{ backgroundColor: "#25D366", color: "#fff" }}
+
+                  {/* Real <a> tag — never blocked by popup blockers */}
+                  <a
+                    href={canSend ? whatsappUrl : undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => { if (canSend) setSubmitted(true); }}
+                    aria-disabled={!canSend}
+                    className={`flex items-center justify-center gap-2 w-full h-12 font-sans text-xs tracking-widest font-medium text-white transition-opacity
+                      ${canSend ? "opacity-100 cursor-pointer" : "opacity-40 cursor-not-allowed pointer-events-none"}`}
+                    style={{ backgroundColor: "#25D366" }}
                   >
-                    <MessageCircle className="mr-2 h-4 w-4" />
+                    <MessageCircle className="h-4 w-4" />
                     SEND VIA WHATSAPP
-                  </Button>
+                  </a>
+
                   <p className="font-sans text-xs text-center" style={{ color: "#6B5A42" }}>
-                    This will open WhatsApp with your message pre-filled
+                    This opens WhatsApp with your message pre-filled. Fill in Name and Message to enable.
                   </p>
                 </div>
               )}

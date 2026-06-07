@@ -14,7 +14,7 @@ import {
 import { useCart } from "@/store/use-cart";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface NavbarClientProps {
   isLoggedIn: boolean;
@@ -32,24 +32,33 @@ const MOBILE_LINKS = [
 ];
 
 export function NavbarClient({ isLoggedIn, isAdmin, userName }: NavbarClientProps) {
-  const totalItems = useCart((s) => s.totalItems());
+  const items = useCart((s) => s.items);
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Hydration guard — Zustand reads localStorage only on client
+  const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMounted(true); }, []);
+
+  // Show distinct item count (number of different products), not total quantity
+  const cartCount = mounted ? items.length : 0;
 
   return (
     <>
       <div className="flex items-center gap-1">
+        {/* Cart */}
         <Link href="/cart">
           <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary hover:bg-primary/10">
             <ShoppingCart size={19} />
-            {totalItems > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {totalItems > 9 ? "9+" : totalItems}
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center leading-none">
+                {cartCount > 9 ? "9+" : cartCount}
               </span>
             )}
           </Button>
         </Link>
 
+        {/* Login / Account */}
         {isLoggedIn ? (
           <DropdownMenu>
             <DropdownMenuTrigger render={
@@ -84,14 +93,22 @@ export function NavbarClient({ isLoggedIn, isAdmin, userName }: NavbarClientProp
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Link href="/login">
-            <Button variant="ghost" size="sm" className="text-xs tracking-widest font-medium text-foreground/70 hover:text-primary hover:bg-primary/10">
-              LOGIN
-            </Button>
-          </Link>
+          /*
+           * DO NOT wrap <Button> inside <Link> — that creates <a><button> (invalid HTML)
+           * and browsers silently swallow clicks. Use router.push() instead.
+           */
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/login")}
+            className="text-xs tracking-widest font-medium hover:text-primary hover:bg-primary/10"
+            style={{ color: "#3D2510" }}
+          >
+            LOGIN
+          </Button>
         )}
 
-        {/* Mobile menu toggle */}
+        {/* Mobile hamburger */}
         <Button
           variant="ghost"
           size="icon"
@@ -104,18 +121,38 @@ export function NavbarClient({ isLoggedIn, isAdmin, userName }: NavbarClientProp
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 top-16 z-40 bg-background border-t border-border lg:hidden">
+        <div className="fixed inset-0 top-20 z-40 border-t border-border lg:hidden" style={{ backgroundColor: "#F5EDE0" }}>
           <nav className="flex flex-col p-6 gap-1">
             {MOBILE_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="py-3 text-sm font-medium tracking-widest border-b border-border text-foreground/70 hover:text-primary transition-colors"
+                className="py-3 text-sm font-medium tracking-widest border-b border-border hover:text-primary transition-colors"
+                style={{ color: "#3D2510" }}
               >
                 {link.label.toUpperCase()}
               </Link>
             ))}
+            {/* Login / account in mobile menu */}
+            <div className="pt-4 mt-2">
+              {isLoggedIn ? (
+                <button
+                  onClick={() => { setMobileOpen(false); signOut({ callbackUrl: "/" }); }}
+                  className="w-full text-left py-3 text-sm font-medium tracking-widest text-destructive hover:opacity-80 transition-opacity"
+                >
+                  LOGOUT
+                </button>
+              ) : (
+                <button
+                  onClick={() => { setMobileOpen(false); router.push("/login"); }}
+                  className="w-full text-left py-3 text-sm font-medium tracking-widest hover:text-primary transition-colors"
+                  style={{ color: "#3D2510" }}
+                >
+                  LOGIN / SIGN UP
+                </button>
+              )}
+            </div>
           </nav>
         </div>
       )}

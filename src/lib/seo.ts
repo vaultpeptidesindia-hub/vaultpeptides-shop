@@ -13,7 +13,9 @@ const WHATSAPP_E164 = "+918722579999";
 // Social / external profiles that reference the brand. Add real URLs here as
 // they go live (Instagram, X, LinkedIn, etc.) — they strengthen brand identity
 // in Google's eyes (the `sameAs` signal feeds the knowledge panel).
-export const SOCIAL_PROFILES: string[] = [];
+export const SOCIAL_PROFILES: string[] = [
+  "https://www.instagram.com/vaultpeptides.shop/",
+];
 
 export const organizationSchema = {
   "@context": "https://schema.org",

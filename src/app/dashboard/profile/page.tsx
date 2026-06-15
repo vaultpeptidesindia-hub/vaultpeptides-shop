@@ -4,13 +4,14 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/navbar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { updateProfile } from "@/actions/profile";
 
 export default function ProfilePage() {
@@ -38,10 +39,8 @@ export default function ProfilePage() {
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1 container mx-auto px-4 lg:px-8 py-12 max-w-2xl">
-        <Link href="/dashboard">
-          <Button variant="ghost" className="mb-6 -ml-2 text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
-          </Button>
+        <Link href="/dashboard" className={cn(buttonVariants({ variant: "ghost" }), "mb-6 -ml-2 text-muted-foreground hover:text-foreground")}>
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
         </Link>
         <h1 className="text-3xl font-bold tracking-tight mb-8">Profile Settings</h1>
         <Card className="bg-card border-border">

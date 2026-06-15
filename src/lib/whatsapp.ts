@@ -9,19 +9,17 @@ export function buildWaLink(message: string): string {
 }
 
 /**
- * Open WhatsApp with a pre-filled message in a new tab.
- * Uses a synthetic anchor click — more reliable than window.open for wa.me
- * deep links across mobile + desktop browsers.
+ * Redirect the current tab to WhatsApp with a pre-filled message.
+ *
+ * Uses same-tab navigation (window.location) instead of window.open /
+ * target="_blank". Popup-style opens are blocked by browsers when they fire
+ * AFTER an `await` (e.g. after the checkout server action resolves) because the
+ * user-gesture/transient-activation is gone. Location navigation is never
+ * popup-blocked, so this reliably reaches WhatsApp on both mobile + desktop.
  */
 export function openWhatsApp(message: string): void {
-  if (typeof document === "undefined") return;
-  const a = document.createElement("a");
-  a.href = buildWaLink(message);
-  a.target = "_blank";
-  a.rel = "noopener noreferrer";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  if (typeof window === "undefined") return;
+  window.location.href = buildWaLink(message);
 }
 
 /** Pre-filled message for a Certificate of Analysis request. */

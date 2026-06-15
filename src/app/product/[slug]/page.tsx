@@ -7,6 +7,8 @@ import { ProductCard } from "@/components/shop/product-card";
 import { COATrustSection } from "@/components/coa-trust-section";
 import { auth } from "@/auth";
 import { firstImage, parseImages } from "@/lib/images";
+import { JsonLd } from "@/components/seo/json-ld";
+import { productSchema, breadcrumbSchema } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -14,11 +16,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const product = await db.product.findUnique({ where: { slug } });
   if (!product) return {};
   return {
-    title: `${product.name} | Vault Peptides`,
+    title: product.name,
     description: product.description.slice(0, 160),
+    alternates: { canonical: `/product/${slug}` },
     openGraph: {
+      type: "website",
       title: `${product.name} | Vault Peptides`,
       description: product.description.slice(0, 160),
+      url: `/product/${slug}`,
       images: parseImages(product.images).slice(0, 1),
     },
   };
@@ -50,8 +55,29 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const defaultImage = firstImage(product.images);
   const isLoggedIn = !!session?.user?.id;
 
+  const prices = product.variants.map((v) => v.price);
+  const inStock = product.variants.some((v) => v.stock > 0);
+
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: "#F5EDE0" }}>
+      <JsonLd
+        data={[
+          productSchema({
+            name: product.name,
+            slug: product.slug,
+            description: product.description,
+            image: defaultImage,
+            prices,
+            inStock,
+          }),
+          breadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Shop", url: "/shop" },
+            { name: product.category.name, url: "/shop" },
+            { name: product.name, url: `/product/${product.slug}` },
+          ]),
+        ]}
+      />
       <Navbar />
       <main className="flex-1">
         {/* Product detail section — solid bg */}

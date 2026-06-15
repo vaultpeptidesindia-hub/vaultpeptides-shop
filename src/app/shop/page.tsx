@@ -3,6 +3,14 @@ export const dynamic = "force-dynamic";
 import Navbar from "@/components/layout/navbar";
 import { db } from "@/lib/db";
 import { ProductCard } from "@/components/shop/product-card";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Shop Research Peptides",
+  description:
+    "Browse the full Vault Peptides catalog — lab-tested research peptides and blends with 99%+ purity. COA available on request. Fast pan-India shipping.",
+  alternates: { canonical: "/shop" },
+};
 
 export default async function ShopPage() {
   const products = await db.product.findMany({

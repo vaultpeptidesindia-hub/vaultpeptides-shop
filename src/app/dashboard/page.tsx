@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShoppingBag, MapPin, User, Settings, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -31,10 +32,8 @@ export default async function DashboardPage() {
           <Card className="bg-card border-border md:col-span-2">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl font-bold">Recent Orders</CardTitle>
-              <Link href="/dashboard/orders">
-                <Button variant="ghost" size="sm">
-                  View All <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+              <Link href="/dashboard/orders" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
+                View All <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </CardHeader>
             <CardContent>
@@ -80,10 +79,8 @@ export default async function DashboardPage() {
                 ) : (
                   <p className="text-sm text-muted-foreground">No default address set.</p>
                 )}
-                <Link href="/dashboard/addresses">
-                  <Button variant="outline" className="w-full mt-4 border-border">
-                    Manage Addresses
-                  </Button>
+                <Link href="/dashboard/addresses" className={cn(buttonVariants({ variant: "outline" }), "w-full mt-4 border-border")}>
+                  Manage Addresses
                 </Link>
               </CardContent>
             </Card>
@@ -95,15 +92,11 @@ export default async function DashboardPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Link href="/dashboard/profile">
-                  <Button variant="ghost" className="w-full justify-start hover:bg-primary/10 hover:text-primary">
-                    <User className="mr-2 h-4 w-4" /> Profile Settings
-                  </Button>
+                <Link href="/dashboard/profile" className={cn(buttonVariants({ variant: "ghost" }), "w-full justify-start hover:bg-primary/10 hover:text-primary")}>
+                  <User className="mr-2 h-4 w-4" /> Profile Settings
                 </Link>
-                <Link href="/dashboard/orders">
-                  <Button variant="ghost" className="w-full justify-start hover:bg-primary/10 hover:text-primary">
-                    <ShoppingBag className="mr-2 h-4 w-4" /> Order History
-                  </Button>
+                <Link href="/dashboard/orders" className={cn(buttonVariants({ variant: "ghost" }), "w-full justify-start hover:bg-primary/10 hover:text-primary")}>
+                  <ShoppingBag className="mr-2 h-4 w-4" /> Order History
                 </Link>
                 <form action="/api/auth/signout" method="POST">
                    <Button variant="ghost" className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive" type="submit">

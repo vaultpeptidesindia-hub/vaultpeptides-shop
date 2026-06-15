@@ -56,9 +56,20 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="font-sans text-xs text-muted-foreground">© 2025 Vault Peptides. All rights reserved.</p>
-          <p className="font-sans text-xs text-muted-foreground/60 italic">For laboratory research use only.</p>
+        {/* Legal links */}
+        <div className="mt-14 pt-8 border-t border-border">
+          <ul className="flex flex-wrap gap-x-6 gap-y-2 font-sans text-xs text-muted-foreground">
+            <li><Link href="/terms" className="hover:text-primary transition-colors">Terms &amp; Conditions</Link></li>
+            <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+            <li><Link href="/shipping-policy" className="hover:text-primary transition-colors">Shipping Policy</Link></li>
+            <li><Link href="/refund-policy" className="hover:text-primary transition-colors">Refund &amp; Cancellation</Link></li>
+            <li><Link href="/disclaimer" className="hover:text-primary transition-colors">Research Disclaimer</Link></li>
+          </ul>
+        </div>
+
+        <div className="mt-8 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="font-sans text-xs text-muted-foreground">© {new Date().getFullYear()} Vault Peptides. All rights reserved.</p>
+          <p className="font-sans text-xs text-muted-foreground/60 italic">For laboratory research use only. Not for human consumption.</p>
         </div>
       </div>
     </footer>

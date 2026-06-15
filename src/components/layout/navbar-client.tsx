@@ -119,7 +119,16 @@ export function NavbarClient({ isLoggedIn, isAdmin, userName, dbCartCount }: Nav
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 top-20 z-40 border-t border-border lg:hidden" style={{ backgroundColor: "#F5EDE0" }}>
+        <>
+          {/* Dark scrim — covers the rest of the screen (incl. the 3D spine) and
+              closes the menu on tap so the panel reads as fully opaque. */}
+          <div
+            className="fixed inset-x-0 bottom-0 top-20 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden
+          />
+          {/* Solid panel */}
+          <div className="fixed inset-x-0 top-20 z-50 border-t border-border shadow-2xl lg:hidden" style={{ backgroundColor: "#F5EDE0" }}>
           <nav className="flex flex-col p-6 gap-1">
             {MOBILE_LINKS.map((link) => (
               <Link
@@ -151,7 +160,8 @@ export function NavbarClient({ isLoggedIn, isAdmin, userName, dbCartCount }: Nav
               )}
             </div>
           </nav>
-        </div>
+          </div>
+        </>
       )}
     </>
   );

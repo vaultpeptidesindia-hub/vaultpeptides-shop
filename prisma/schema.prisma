@@ -1,5 +1,9 @@
 generator client {
   provider = "prisma-client-js"
+  // "native" = local dev engine (macOS/Windows). "rhel-openssl-3.0.x" = the engine
+  // Vercel's Lambda runtime (Amazon Linux) needs. Without it, queries throw at runtime
+  // on Vercel even though the build succeeds. Keep both so dev + prod both work.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {

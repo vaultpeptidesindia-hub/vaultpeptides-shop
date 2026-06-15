@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { appendCustomer, appendOrder } from "@/lib/ledger";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -118,6 +119,22 @@ export const processCheckout = async (values: CheckoutInput) => {
         await db.cartItem.deleteMany({ where: { cartId: cart.id } });
       }
     }
+
+    // Save clean, human-readable copies to /data (best-effort, never blocks the order)
+    const orderItemsForLedger = order.items.map((item) => ({
+      productName: item.variant.product.name,
+      variantName: item.variant.name,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+    await appendOrder({
+      orderNumber: order.orderNumber,
+      customer: { name, email, phone },
+      shippingAddress: { name, email, phone, line1, line2, city, state, pincode, country },
+      items: orderItemsForLedger,
+      totalAmount: order.totalAmount,
+    });
+    await appendCustomer({ name, email, phone, source: "checkout" });
 
     revalidatePath("/dashboard/orders");
     revalidatePath("/cart");

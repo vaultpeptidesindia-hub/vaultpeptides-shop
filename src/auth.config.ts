@@ -1,6 +1,10 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  // Required for self-hosted / non-Vercel production (e.g. `next start`, a VPS,
+  // or any custom host). Without this, Auth.js v5 throws "UntrustedHost" in
+  // production and every request is wrongly treated as authenticated.
+  trustHost: true,
   pages: {
     signIn: "/login",
   },

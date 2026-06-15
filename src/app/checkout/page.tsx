@@ -3,6 +3,7 @@ import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { COATrustSection } from "@/components/coa-trust-section";
 import { auth } from "@/auth";
 import { getCart } from "@/actions/cart";
+import { firstImage } from "@/lib/images";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Checkout | Vault Peptides" };
@@ -18,7 +19,7 @@ export default async function CheckoutPage() {
     variantName: item.variant?.name ?? "",
     price: item.variant?.price ?? 0,
     quantity: item.quantity,
-    image: item.variant?.product?.images?.[0] ?? "/logo.png",
+    image: firstImage(item.variant?.product?.images),
   }));
 
   return (

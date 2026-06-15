@@ -21,10 +21,15 @@ export default async function Home() {
       <Navbar />
 
       {/* ── Hero — transparent so the 3D spine shows through ── */}
-      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
-        {/* Central card — high opacity so text stays readable over the spine */}
-        <div className="relative z-10 rounded-2xl p-10 md:p-14 max-w-xl mx-4 text-center shadow-lg border border-border" style={{ backgroundColor: "rgba(245,237,224,0.92)" }}>
-          <p className="text-[10px] font-sans font-medium tracking-[0.25em] text-primary/70 uppercase mb-6">
+      <section className="relative min-h-[100svh] flex items-center justify-center md:justify-start overflow-hidden">
+        {/* Card shifts left on desktop so the glowing 3D spine reads on the right;
+            frosted glass keeps text crisp while letting the spine show through. */}
+        <div
+          className="relative z-10 rounded-2xl p-9 md:p-14 max-w-xl mx-4 md:ml-[6vw] lg:ml-[9vw] text-center md:text-left border shadow-2xl backdrop-blur-md"
+          style={{ backgroundColor: "rgba(245,237,224,0.82)", borderColor: "rgba(122,72,40,0.22)" }}
+        >
+          <p className="inline-flex items-center gap-2 text-[10px] font-sans font-medium tracking-[0.25em] text-primary/70 uppercase mb-6">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/60 animate-pulse" />
             Unlock Your Biological Potential
           </p>
           <h1 className="font-serif text-5xl md:text-6xl font-light leading-tight mb-6" style={{ color: "#1A0E05" }}>
@@ -37,7 +42,7 @@ export default async function Home() {
           <p className="text-sm font-sans leading-relaxed mb-10" style={{ color: "#5C3D20" }}>
             Every batch is strictly tested for purity. Explore our catalog to find the highest quality products for your research and wellness journey.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
             <Link href="/shop">
               <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 text-xs tracking-widest font-sans font-medium rounded-none">
                 SHOP NOW <ArrowRight className="ml-2 h-3.5 w-3.5" />
@@ -49,7 +54,7 @@ export default async function Home() {
               </Button>
             </Link>
           </div>
-          <div className="mt-10 flex justify-center animate-bounce">
+          <div className="mt-10 flex justify-center md:justify-start animate-bounce">
             <ArrowDown className="h-5 w-5 text-primary/40" />
           </div>
         </div>

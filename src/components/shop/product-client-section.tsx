@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, FileText, ShieldCheck, FlaskConical, Truck, Award } from "lucide-react";
+import { ShoppingCart, MessageCircle, ShieldCheck, FlaskConical, Truck, Award } from "lucide-react";
 import { useCart } from "@/store/use-cart";
 import { addToCart } from "@/actions/cart";
 import { toast } from "sonner";
-import { COARequestModal } from "@/components/shop/coa-request-modal";
+import { coaMessage, openWhatsApp } from "@/lib/whatsapp";
 
 interface Variant {
   id: string;
@@ -75,9 +75,13 @@ export function ProductClientSection({
   isLoggedIn = false,
 }: ProductClientSectionProps) {
   const [selected, setSelected] = useState<Variant | null>(variants[0] ?? null);
-  const [coaOpen, setCoaOpen] = useState(false);
   const [adding, setAdding] = useState(false);
   const { addItem } = useCart();
+
+  const handleRequestCOA = () => {
+    toast.success("Opening WhatsApp to request your COA…");
+    openWhatsApp(coaMessage(product.name, selected?.name));
+  };
 
   const currentImage = selected
     ? getVariantImage(product.slug, selected.name, defaultImage)
@@ -204,11 +208,11 @@ export function ProductClientSection({
           </Button>
           <Button
             variant="outline"
-            onClick={() => setCoaOpen(true)}
+            onClick={handleRequestCOA}
             className="flex-1 h-12 rounded-none font-sans text-xs tracking-widest"
             style={{ borderColor: "#C8B89E", color: "#1A0E05" }}
           >
-            <FileText className="mr-2 h-4 w-4" /> REQUEST COA
+            <MessageCircle className="mr-2 h-4 w-4" /> REQUEST COA
           </Button>
         </div>
 
@@ -242,13 +246,6 @@ export function ProductClientSection({
           ))}
         </div>
       </div>
-
-      <COARequestModal
-        open={coaOpen}
-        onClose={() => setCoaOpen(false)}
-        productName={product.name}
-        productId={product.id}
-      />
     </div>
   );
 }

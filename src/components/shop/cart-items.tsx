@@ -7,6 +7,7 @@ import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/store/use-cart";
 import { removeFromCart, updateCartItemQuantity } from "@/actions/cart";
+import { firstImage } from "@/lib/images";
 import { toast } from "sonner";
 
 interface CartItemsProps {
@@ -90,7 +91,7 @@ export function CartItems({ dbCart, isLoggedIn }: CartItemsProps) {
             return (
               <div key={item.id} className="flex gap-5 p-5 border border-border rounded-lg" style={{ backgroundColor: "#EDE1CE" }}>
                 <div className="w-20 h-20 rounded-lg relative overflow-hidden shrink-0 border border-border" style={{ backgroundColor: "#FAF5EE" }}>
-                  <Image src={product.images?.[0] || "/logo.png"} alt={product.name} fill className="object-contain p-2" />
+                  <Image src={firstImage(product.images)} alt={product.name} fill className="object-contain p-2" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start mb-1">

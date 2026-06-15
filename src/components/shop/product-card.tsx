@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
+import { firstImage } from "@/lib/images";
 
 interface ProductCardProps {
   product: {
@@ -12,7 +13,7 @@ interface ProductCardProps {
     slug: string;
     description: string;
     basePrice: number;
-    images?: string[];
+    images?: string | null;
     isFeatured: boolean;
     category?: { name: string };
     variants?: { id: string; name: string; price: number }[];
@@ -20,7 +21,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const mainImage = product.images?.[0] || "/logo.png";
+  const mainImage = firstImage(product.images);
   const variants = product.variants ?? [];
 
   // Sale price = basePrice, original = 20% higher

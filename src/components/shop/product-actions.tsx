@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, FileText } from "lucide-react";
+import { ShoppingCart, MessageCircle } from "lucide-react";
 import { useCart } from "@/store/use-cart";
 import { toast } from "sonner";
-import { COARequestModal } from "@/components/shop/coa-request-modal";
+import { coaMessage, openWhatsApp } from "@/lib/whatsapp";
 
 interface Variant { id: string; name: string; price: number; stock: number }
 interface ProductActionsProps {
@@ -15,8 +15,12 @@ interface ProductActionsProps {
 
 export function ProductActions({ product, variants }: ProductActionsProps) {
   const [selected, setSelected] = useState<Variant | null>(variants[0] ?? null);
-  const [coaOpen, setCoaOpen] = useState(false);
   const { addItem } = useCart();
+
+  const handleRequestCOA = () => {
+    toast.success("Opening WhatsApp to request your COA…");
+    openWhatsApp(coaMessage(product.name, selected?.name));
+  };
 
   const handleAdd = () => {
     if (!selected) return;
@@ -75,14 +79,12 @@ export function ProductActions({ product, variants }: ProductActionsProps) {
         </Button>
         <Button
           variant="outline"
-          onClick={() => setCoaOpen(true)}
+          onClick={handleRequestCOA}
           className="flex-1 border-border text-foreground hover:border-primary hover:text-primary h-12 rounded-none font-sans text-xs tracking-widest"
         >
-          <FileText className="mr-2 h-4 w-4" /> REQUEST COA
+          <MessageCircle className="mr-2 h-4 w-4" /> REQUEST COA
         </Button>
       </div>
-
-      <COARequestModal open={coaOpen} onClose={() => setCoaOpen(false)} productName={product.name} productId={product.id} />
     </>
   );
 }

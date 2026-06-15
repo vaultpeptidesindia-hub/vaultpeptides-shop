@@ -2,6 +2,7 @@
 
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
+import { appendCustomer } from "@/lib/ledger";
 import { z } from "zod";
 
 const RegisterSchema = z.object({
@@ -37,6 +38,9 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
       passwordHash: hashedPassword,
     },
   });
+
+  // Also save a clean, human-readable copy to data/customers.json + .csv
+  await appendCustomer({ name, email, phone, source: "signup" });
 
   return { success: "User created!" };
 };

@@ -1,24 +1,56 @@
 # Vault Peptides - Deployment Guide
 
+## 0. Local Quick Start (zero-config) ⚡
+No external database needed — the app ships with a SQLite database file.
+
+```bash
+npm install
+npx prisma generate
+npx prisma db push      # creates prisma/dev.db
+npx prisma db seed      # loads products + creates the admin account
+npm run dev             # http://localhost:3000
+```
+
+**Seeded admin login:** `admin@vaultpeptides.shop` / `VaultAdmin@123`
+(change these in `.env` via `ADMIN_EMAIL` / `ADMIN_PASSWORD`, then re-seed.)
+
+**Where customer data is saved:** besides the database, every signup and order is
+also written to clean, human-readable files you can open directly:
+- `data/customers.json` and `data/customers.csv` — every customer's details
+- `data/orders.json` — every order placed
+
 ## 1. Prerequisites
-- Node.js 18+
-- PostgreSQL Database (Neon.tech or Supabase recommended)
-- Vercel Account for hosting
+- Node.js 18+ (this project is tested on Node 24)
+- A WhatsApp number for orders/COA (currently `918722579999`)
+- For production: a host (Vercel/VPS) and — if you outgrow SQLite — a PostgreSQL database
 
 ## 2. Environment Variables
-Create a `.env` file (see `.env.example`) and set the following:
-- `DATABASE_URL`: Your PostgreSQL connection string.
-- `NEXTAUTH_SECRET`: A random string for session encryption.
-- `NEXTAUTH_URL`: Your production URL (e.g., `https://vaultpeptides.shop`).
-- `WHATSAPP_NUMBER`: The business WhatsApp number (currently `918722579999`).
+Copy `.env.example` to `.env` and set:
+- `DATABASE_URL`: `file:./dev.db` for local SQLite, or a PostgreSQL URL for production.
+- `AUTH_SECRET` / `NEXTAUTH_SECRET`: random string for session encryption (`openssl rand -base64 32`).
+- `NEXTAUTH_URL`: your URL (`http://localhost:3000` locally, `https://vaultpeptides.shop` in prod).
+- `WHATSAPP_NUMBER`: the business WhatsApp number.
+- `ADMIN_EMAIL` / `ADMIN_PASSWORD`: credentials seeded for the `/admin` dashboard.
 
 ## 3. Database Setup
-Run the following commands to initialize your database:
 ```bash
 npx prisma generate
-npx prisma db push
+npx prisma db push      # syncs the schema to your database
+npx prisma db seed      # products + admin user
 ```
-*Note: Use `prisma migrate dev` for development and `prisma db push` for quick prototyping if migrations aren't enabled.*
+
+### Switching to PostgreSQL for production
+The schema is intentionally **portable** (plain strings instead of enums, JSON-in-text
+instead of arrays). To move to Postgres, change ONLY the datasource in
+`prisma/schema.prisma`:
+```prisma
+datasource db {
+  provider = "postgresql"   // was "sqlite"
+  url      = env("DATABASE_URL")
+}
+```
+…then set `DATABASE_URL` to your Postgres connection string and run `prisma db push` + `prisma db seed`.
+No application code changes are required.
 
 ## 4. Deploy to Vercel
 1. Push your code to a GitHub repository.

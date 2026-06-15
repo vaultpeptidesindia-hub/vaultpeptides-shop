@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { processCheckout } from "@/actions/checkout";
 import { toast } from "sonner";
 import { useCart } from "@/store/use-cart";
+import { openWhatsApp } from "@/lib/whatsapp";
 import { MessageCircle, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
@@ -83,18 +84,12 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
         .map((i) => `• ${i.productName} ${i.variantName} × ${i.quantity} — ₹${(i.price * i.quantity).toLocaleString("en-IN")}`)
         .join("\n");
 
-      const waText = encodeURIComponent(
-        `Hello Vault Peptides,\n\nI would like to place an order.\n\n*Order ID:* ${order.orderNumber}\n\n*Customer:*\nName: ${addr.name}\nPhone: ${addr.phone}\nEmail: ${addr.email}\n\n*Ship to:*\n${addr.line1}${addr.line2 ? `, ${addr.line2}` : ""}\n${addr.city}, ${addr.state} – ${addr.pincode}, ${addr.country}\n\n*Items:*\n${productsList}\n\n*Total: ₹${order.totalAmount.toLocaleString("en-IN")}*\n\nPlease confirm. Thank you!`
-      );
+      const message =
+        `Hello Vault Peptides,\n\nI would like to place an order.\n\n*Order ID:* ${order.orderNumber}\n\n*Customer:*\nName: ${addr.name}\nPhone: ${addr.phone}\nEmail: ${addr.email}\n\n*Ship to:*\n${addr.line1}${addr.line2 ? `, ${addr.line2}` : ""}\n${addr.city}, ${addr.state} – ${addr.pincode}, ${addr.country}\n\n*Items:*\n${productsList}\n\n*Total: ₹${order.totalAmount.toLocaleString("en-IN")}*\n\nPlease confirm. Thank you!`;
 
-      // Use anchor click — more reliable than window.location.href for WhatsApp deep links
-      const a = document.createElement("a");
-      a.href = `https://wa.me/918722579999?text=${waText}`;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Central helper → single source of truth for the business WhatsApp number,
+      // and a reliable anchor-click deep link across mobile + desktop.
+      openWhatsApp(message);
     } else {
       toast.error(res.error || "Something went wrong. Please try again.");
       setLoading(false);

@@ -3,22 +3,17 @@ generator client {
 }
 
 datasource db {
+  // SQLite = zero-config, works instantly on `npm run dev` (data saved to prisma/dev.db).
+  // To move to production Postgres later: set provider = "postgresql" and point
+  // DATABASE_URL at your Postgres URL. The schema below is intentionally portable
+  // (plain strings instead of enums, JSON-in-text instead of scalar arrays), so the
+  // ONLY change needed to switch databases is this provider line + the URL.
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  USER
-  ADMIN
-}
-
-enum OrderStatus {
-  PENDING
-  PROCESSING
-  SHIPPED
-  COMPLETED
-  CANCELLED
-}
+// Roles stored as plain strings ("USER" | "ADMIN") for cross-database portability.
+// OrderStatus values: "PENDING" | "PROCESSING" | "SHIPPED" | "COMPLETED" | "CANCELLED".
 
 model User {
   id            String    @id @default(cuid())
@@ -26,7 +21,7 @@ model User {
   email         String?   @unique
   phone         String?   @unique
   passwordHash  String?
-  role          UserRole  @default(USER)
+  role          String    @default("USER")
   emailVerified DateTime?
   image         String?
   createdAt     DateTime  @default(now())
@@ -47,12 +42,12 @@ model Account {
   type               String
   provider           String
   providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
+  refresh_token      String?
+  access_token       String?
   expires_at         Int?
   token_type         String?
   scope              String?
-  id_token           String?  @db.Text
+  id_token           String?
   session_state      String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -107,11 +102,13 @@ model Product {
   id          String      @id @default(cuid())
   name        String
   slug        String      @unique
-  description String      @db.Text
+  description String
   basePrice   Float       @default(0)
   status      String      @default("ACTIVE")
   isFeatured  Boolean     @default(false)
-  images      String[]
+  // JSON-encoded array of image paths, e.g. "[\"/products/foo.png\"]".
+  // Use parseImages()/firstImage() from src/lib/images.ts to read it.
+  images      String      @default("[]")
   categoryId  String
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -165,7 +162,7 @@ model Order {
   id              String      @id @default(cuid())
   orderNumber     String      @unique
   userId          String?
-  status          OrderStatus @default(PENDING)
+  status          String      @default("PENDING")
   totalAmount     Float
   shippingAddress Json
   createdAt       DateTime    @default(now())
@@ -224,7 +221,7 @@ model WholesaleInquiry {
   email        String
   businessType String
   monthlyVolume String
-  message      String?  @db.Text
+  message      String?
   status       String   @default("NEW")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -236,7 +233,7 @@ model BatchNumber {
   testedAt    DateTime?
   expiresAt   DateTime?
   coaUrl      String?
-  notes       String?        @db.Text
+  notes       String?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 

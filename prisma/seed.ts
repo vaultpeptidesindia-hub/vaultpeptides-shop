@@ -1,8 +1,25 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
+  // ── Admin account (so /admin works out of the box) ──────────────────
+  // Override via env: ADMIN_EMAIL / ADMIN_PASSWORD
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@vaultpeptides.shop";
+  const adminPassword = process.env.ADMIN_PASSWORD || "VaultAdmin@123";
+  await prisma.user.upsert({
+    where: { email: adminEmail },
+    update: { role: "ADMIN" },
+    create: {
+      name: "Vault Admin",
+      email: adminEmail,
+      role: "ADMIN",
+      passwordHash: await bcrypt.hash(adminPassword, 12),
+    },
+  });
+  console.log(`👤 Admin ready → ${adminEmail} / ${adminPassword}`);
+
   const peptides = await prisma.category.upsert({
     where: { slug: "peptides" },
     update: {},
@@ -145,7 +162,9 @@ async function main() {
     },
   ];
 
-  for (const { variants, ...productData } of productsData) {
+  for (const { variants, images, ...rest } of productsData) {
+    // images stored as JSON-encoded string array (portable across DBs)
+    const productData = { ...rest, images: JSON.stringify(images) };
     const product = await prisma.product.upsert({
       where: { slug: productData.slug },
       update: { ...productData },

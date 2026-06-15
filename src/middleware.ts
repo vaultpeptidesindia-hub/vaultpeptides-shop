@@ -4,7 +4,9 @@ import { authConfig } from "@/auth.config";
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
-  const isLoggedIn = !!req.auth;
+  // Check for a real session user — not just a truthy req.auth — so that any
+  // Auth.js error object never gets mistaken for an authenticated session.
+  const isLoggedIn = !!req.auth?.user;
   const { nextUrl } = req;
 
   const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth");

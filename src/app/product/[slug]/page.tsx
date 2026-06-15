@@ -6,6 +6,7 @@ import { ProductClientSection } from "@/components/shop/product-client-section";
 import { ProductCard } from "@/components/shop/product-card";
 import { COATrustSection } from "@/components/coa-trust-section";
 import { auth } from "@/auth";
+import { firstImage, parseImages } from "@/lib/images";
 import type { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: `${product.name} | Vault Peptides`,
       description: product.description.slice(0, 160),
-      images: product.images[0] ? [product.images[0]] : [],
+      images: parseImages(product.images).slice(0, 1),
     },
   };
 }
@@ -46,7 +47,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   });
 
   const currentBatch = product.batches[0]?.batch ?? null;
-  const defaultImage = product.images[0] || "/logo.png";
+  const defaultImage = firstImage(product.images);
   const isLoggedIn = !!session?.user?.id;
 
   return (

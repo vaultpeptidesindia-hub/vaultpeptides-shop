@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { processCheckout } from "@/actions/checkout";
+import { validateReferralCode } from "@/actions/referral";
 import { toast } from "sonner";
 import { useCart } from "@/store/use-cart";
 import { openWhatsApp } from "@/lib/whatsapp";
-import { MessageCircle, ShoppingBag } from "lucide-react";
+import { MessageCircle, ShoppingBag, Tag, X } from "lucide-react";
 import Link from "next/link";
 
 interface DbItem {
@@ -43,6 +44,31 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
   const subtotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
   const hasItems = items.length > 0;
 
+  // ── Referral / coupon code ──
+  const [codeInput, setCodeInput] = useState("");
+  const [applying, setApplying] = useState(false);
+  const [applied, setApplied] = useState<{ code: string; discount: number; affiliateName: string } | null>(null);
+
+  const discount = applied?.discount ?? 0;
+  const total = Math.max(subtotal - discount, 0);
+
+  const handleApplyCode = async () => {
+    const code = codeInput.trim();
+    if (!code) { toast.error("Enter a code."); return; }
+    setApplying(true);
+    const res = await validateReferralCode(code, subtotal);
+    setApplying(false);
+    if ("success" in res && res.success) {
+      setApplied({ code: res.code, discount: res.discount, affiliateName: res.affiliateName });
+      toast.success(res.discount > 0 ? `Code applied — ₹${res.discount.toLocaleString("en-IN")} off!` : "Code applied!");
+    } else {
+      setApplied(null);
+      toast.error(res.error || "Invalid code.");
+    }
+  };
+
+  const removeCode = () => { setApplied(null); setCodeInput(""); };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!hasItems) { toast.error("Your cart is empty."); return; }
@@ -60,6 +86,7 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
       state: fd.get("state") as string,
       pincode: fd.get("pincode") as string,
       country: "India",
+      referralCode: applied?.code,
       // Pass guest items; server uses DB cart for logged-in users
       items: items.map((i) => ({
         variantId: i.variantId,
@@ -84,8 +111,14 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
         .map((i) => `• ${i.productName} ${i.variantName} × ${i.quantity} — ₹${(i.price * i.quantity).toLocaleString("en-IN")}`)
         .join("\n");
 
+      // Show subtotal/discount lines only when a code actually reduced the total.
+      const totalsBlock =
+        order.discountAmount > 0
+          ? `*Subtotal:* ₹${order.subtotal.toLocaleString("en-IN")}\n*Discount${order.referralCode ? ` (${order.referralCode})` : ""}:* −₹${order.discountAmount.toLocaleString("en-IN")}\n*Total: ₹${order.totalAmount.toLocaleString("en-IN")}*`
+          : `*Total: ₹${order.totalAmount.toLocaleString("en-IN")}*`;
+
       const message =
-        `Hello Vault Peptides,\n\nI would like to place an order.\n\n*Order ID:* ${order.orderNumber}\n\n*Customer:*\nName: ${addr.name}\nPhone: ${addr.phone}\nEmail: ${addr.email}\n\n*Ship to:*\n${addr.line1}${addr.line2 ? `, ${addr.line2}` : ""}\n${addr.city}, ${addr.state} – ${addr.pincode}, ${addr.country}\n\n*Items:*\n${productsList}\n\n*Total: ₹${order.totalAmount.toLocaleString("en-IN")}*\n\nPlease confirm. Thank you!`;
+        `Hello Vault Peptides,\n\nI would like to place an order.\n\n*Order ID:* ${order.orderNumber}\n\n*Customer:*\nName: ${addr.name}\nPhone: ${addr.phone}\nEmail: ${addr.email}\n\n*Ship to:*\n${addr.line1}${addr.line2 ? `, ${addr.line2}` : ""}\n${addr.city}, ${addr.state} – ${addr.pincode}, ${addr.country}\n\n*Items:*\n${productsList}\n\n${totalsBlock}\n\nPlease confirm. Thank you!`;
 
       // Central helper → single source of truth for the business WhatsApp number,
       // and a reliable anchor-click deep link across mobile + desktop.
@@ -174,9 +207,55 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
               </div>
             ))}
             <Separator />
+            <div className="flex justify-between font-sans text-sm" style={{ color: "#3D2510" }}>
+              <span>Subtotal</span>
+              <span className="font-semibold" style={{ color: "#1A0E05" }}>₹{subtotal.toLocaleString("en-IN")}</span>
+            </div>
+
+            {/* Referral / coupon code */}
+            {applied ? (
+              <div className="flex items-center justify-between gap-2 rounded-md border border-primary/30 px-3 py-2" style={{ backgroundColor: "rgba(107,53,32,0.06)" }}>
+                <span className="flex items-center gap-1.5 text-xs font-sans font-medium text-primary">
+                  <Tag className="h-3.5 w-3.5" /> {applied.code}
+                </span>
+                <button type="button" onClick={removeCode} className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Remove code">
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Input
+                  value={codeInput}
+                  onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleApplyCode(); } }}
+                  placeholder="Referral / coupon code"
+                  className="h-10 uppercase tracking-wider"
+                  style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleApplyCode}
+                  disabled={applying}
+                  className="h-10 px-4 rounded-none shrink-0"
+                  style={{ borderColor: "#C8B89E", color: "#1A0E05" }}
+                >
+                  {applying ? "…" : "Apply"}
+                </Button>
+              </div>
+            )}
+
+            {discount > 0 && (
+              <div className="flex justify-between font-sans text-sm text-primary">
+                <span>Discount{applied ? ` (${applied.code})` : ""}</span>
+                <span>−₹{discount.toLocaleString("en-IN")}</span>
+              </div>
+            )}
+
+            <Separator />
             <div className="flex justify-between font-sans font-bold text-base" style={{ color: "#1A0E05" }}>
               <span>Total</span>
-              <span>₹{subtotal.toLocaleString("en-IN")}</span>
+              <span>₹{total.toLocaleString("en-IN")}</span>
             </div>
           </div>
 

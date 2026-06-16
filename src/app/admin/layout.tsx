@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Building2, Hash, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Building2, Hash, Ticket, ArrowLeft } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/products", label: "Products", icon: Package },
+  { href: "/admin/referrals", label: "Referral Codes", icon: Ticket },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/coa", label: "COA Requests", icon: FileText },
   { href: "/admin/wholesale", label: "Wholesale Leads", icon: Building2 },

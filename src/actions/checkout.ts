@@ -3,6 +3,8 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { appendCustomer, appendOrder } from "@/lib/ledger";
+import { computeDiscount } from "@/lib/discount";
+import { notifyAffiliateCodeUsed } from "@/lib/notify";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -16,6 +18,7 @@ const CheckoutSchema = z.object({
   state: z.string().min(1, "State is required"),
   pincode: z.string().min(6, "Valid pincode required"),
   country: z.string().default("India"),
+  referralCode: z.string().optional(),
   items: z
     .array(
       z.object({
@@ -40,7 +43,7 @@ export const processCheckout = async (values: CheckoutInput) => {
     return { error: "Invalid fields: " + validatedFields.error.issues[0]?.message };
   }
 
-  const { name, email, phone, line1, line2, city, state, pincode, country, items: localItems } =
+  const { name, email, phone, line1, line2, city, state, pincode, country, referralCode, items: localItems } =
     validatedFields.data;
 
   interface OrderLineItem {
@@ -84,10 +87,29 @@ export const processCheckout = async (values: CheckoutInput) => {
     return { error: "Your cart is empty!" };
   }
 
-  const totalAmount = cartItemsToOrder.reduce(
+  const subtotal = cartItemsToOrder.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
+
+  // ── Referral / coupon code (re-validated server-side; never trust the client) ──
+  let appliedReferral: { id: string; code: string; affiliateName: string; affiliatePhone: string } | null = null;
+  let discountAmount = 0;
+  const codeInput = referralCode?.trim().toUpperCase();
+  if (codeInput) {
+    const referral = await db.referralCode.findUnique({ where: { code: codeInput } });
+    if (referral && referral.active) {
+      discountAmount = computeDiscount(subtotal, referral.discountType, referral.discountValue);
+      appliedReferral = {
+        id: referral.id,
+        code: referral.code,
+        affiliateName: referral.affiliateName,
+        affiliatePhone: referral.affiliatePhone,
+      };
+    }
+  }
+
+  const totalAmount = Math.max(subtotal - discountAmount, 0);
   const orderNumber = `VP-${Math.floor(10000 + Math.random() * 90000)}`;
 
   try {
@@ -95,8 +117,10 @@ export const processCheckout = async (values: CheckoutInput) => {
       data: {
         orderNumber,
         totalAmount,
+        discountAmount,
         status: "PENDING",
         ...(userId && { userId }),
+        ...(appliedReferral && { referralCodeId: appliedReferral.id }),
         shippingAddress: { name, email, phone, line1, line2, city, state, pincode, country },
         items: {
           create: cartItemsToOrder.map((item) => ({
@@ -112,6 +136,25 @@ export const processCheckout = async (values: CheckoutInput) => {
         },
       },
     });
+
+    // Record usage + notify the affiliate over WhatsApp (best-effort; never blocks the order).
+    if (appliedReferral) {
+      try {
+        await db.referralCode.update({
+          where: { id: appliedReferral.id },
+          data: { timesUsed: { increment: 1 } },
+        });
+      } catch (e) {
+        console.error("Referral usage increment failed:", e);
+      }
+      await notifyAffiliateCodeUsed({
+        affiliatePhone: appliedReferral.affiliatePhone,
+        affiliateName: appliedReferral.affiliateName,
+        code: appliedReferral.code,
+        orderNumber: order.orderNumber,
+        orderTotal: order.totalAmount,
+      });
+    }
 
     if (userId) {
       const cart = await db.cart.findUnique({ where: { userId } });
@@ -144,7 +187,10 @@ export const processCheckout = async (values: CheckoutInput) => {
       orderId: order.orderNumber,
       orderData: {
         orderNumber: order.orderNumber,
+        subtotal,
+        discountAmount,
         totalAmount: order.totalAmount,
+        referralCode: appliedReferral?.code ?? null,
         shippingAddress: order.shippingAddress,
         items: order.items.map((item) => ({
           productName: item.variant.product.name,

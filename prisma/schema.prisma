@@ -167,13 +167,33 @@ model Order {
   orderNumber     String      @unique
   userId          String?
   status          String      @default("PENDING")
-  totalAmount     Float
+  totalAmount     Float       // final amount after any referral discount
+  discountAmount  Float       @default(0)
+  referralCodeId  String?
   shippingAddress Json
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
-  user            User?       @relation(fields: [userId], references: [id])
+  user            User?         @relation(fields: [userId], references: [id])
+  referralCode    ReferralCode? @relation(fields: [referralCodeId], references: [id])
   items           OrderItem[]
+}
+
+// Affiliate / referral codes. Each code is owned by a collaborator and tied to
+// their phone (WhatsApp), which is notified whenever the code is used.
+model ReferralCode {
+  id             String   @id @default(cuid())
+  code           String   @unique          // stored uppercase
+  affiliateName  String
+  affiliatePhone String                    // E.164-ish, used for WhatsApp notify
+  discountType   String   @default("NONE") // NONE | PERCENT | FLAT
+  discountValue  Float    @default(0)       // 10 = 10% (PERCENT) or ₹10 (FLAT)
+  active         Boolean  @default(true)
+  timesUsed      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  orders         Order[]
 }
 
 model OrderItem {

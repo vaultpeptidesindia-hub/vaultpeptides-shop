@@ -63,7 +63,7 @@ export function NavbarClient({ isLoggedIn, isAdmin, userName, dbCartCount }: Nav
         {isLoggedIn ? (
           <DropdownMenu>
             <DropdownMenuTrigger render={
-              <Button variant="ghost" size="icon" className="text-foreground hover:text-primary hover:bg-primary/10">
+              <Button variant="ghost" size="icon" className="text-foreground hover:text-primary hover:bg-primary/10" aria-label="Account menu">
                 <User size={19} />
               </Button>
             } />

@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowRight, ShieldCheck, FlaskConical, Truck, Award } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/db";
+import { auth } from "@/auth";
 import { ProductCard } from "@/components/shop/product-card";
 import { COATrustSection } from "@/components/coa-trust-section";
+import { BrandSiteCallout } from "@/components/brand-site-callout";
 
 export default async function Home() {
   const featuredProducts = await db.product.findMany({
@@ -14,6 +16,9 @@ export default async function Home() {
     take: 6,
     include: { category: true, variants: { orderBy: { price: "asc" } } },
   });
+
+  const session = await auth();
+  const isLoggedIn = !!session?.user?.id;
 
   return (
     // Outer div has no background — the fixed 3D spine canvas shows through the hero section
@@ -90,7 +95,7 @@ export default async function Home() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} isLoggedIn={isLoggedIn} />
             ))}
           </div>
 
@@ -103,6 +108,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── Main brand site cross-link ──────────────────────── */}
+      <BrandSiteCallout className="border-y border-border" />
 
       {/* ── COA Trust Section ───────────────────────────────── */}
       <COATrustSection />

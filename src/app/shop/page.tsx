@@ -4,6 +4,7 @@ import Navbar from "@/components/layout/navbar";
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { ProductCard } from "@/components/shop/product-card";
+import { BrandSiteCallout } from "@/components/brand-site-callout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -77,6 +78,9 @@ export default async function ShopPage() {
             </div>
           </div>
         </section>
+
+        {/* Main brand site cross-link */}
+        <BrandSiteCallout className="border-t border-border" />
       </main>
     </div>
   );

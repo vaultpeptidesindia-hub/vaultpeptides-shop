@@ -56,8 +56,24 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Main brand site cross-link */}
+        <div className="mt-14 pt-8 border-t border-border text-center">
+          <p className="font-sans text-sm" style={{ color: "#3D2510" }}>
+            Check out{" "}
+            <a
+              href="https://vaultpeptides.in"
+              target="_blank"
+              rel="noopener"
+              className="font-semibold text-primary underline underline-offset-4 hover:text-primary/80 transition-colors"
+            >
+              vaultpeptides.in
+            </a>{" "}
+            for more information on the brand and the products.
+          </p>
+        </div>
+
         {/* Legal links */}
-        <div className="mt-14 pt-8 border-t border-border">
+        <div className="mt-10 pt-8 border-t border-border">
           <ul className="flex flex-wrap gap-x-6 gap-y-2 font-sans text-xs text-muted-foreground">
             <li><Link href="/terms" className="hover:text-primary transition-colors">Terms &amp; Conditions</Link></li>
             <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>

@@ -15,11 +15,19 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopPage() {
-  const products = await db.product.findMany({
+  const allProducts = await db.product.findMany({
     where: { status: "ACTIVE" },
     include: { category: true, variants: { orderBy: { price: "asc" } } },
     orderBy: { createdAt: "desc" },
   });
+
+  // Pin these three to the front (in this order); the rest keep createdAt-desc order.
+  const PINNED = ["retatrutide", "ghk-cu", "cjc-ipa"];
+  const rank = (slug: string) => {
+    const i = PINNED.indexOf(slug);
+    return i === -1 ? PINNED.length : i;
+  };
+  const products = [...allProducts].sort((a, b) => rank(a.slug) - rank(b.slug));
 
   const categories = await db.category.findMany({ orderBy: { name: "asc" } });
 

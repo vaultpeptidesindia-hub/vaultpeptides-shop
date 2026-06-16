@@ -33,7 +33,7 @@ export default function RefundPolicyPage() {
       <LegalSection title="3. Damaged, defective, or incorrect items">
         <p>
           If you receive an item that is damaged in transit, defective, or different from what you ordered, contact
-          us within <strong>48 hours of delivery</strong> with your order number and clear photos. After
+          us within <strong>6 hours of delivery</strong> with your order number and clear photos. After
           verification, we will offer a free replacement or a refund. Please do not discard the item or packaging
           until the issue is resolved.
         </p>
@@ -51,7 +51,7 @@ export default function RefundPolicyPage() {
         <ul className="list-disc pl-5 space-y-1">
           <li>Orders where an incorrect shipping address was provided by the customer.</li>
           <li>Products that have been opened, used, or tampered with (outside of a verified defect).</li>
-          <li>Returns requested after the 48-hour reporting window for damaged or incorrect items.</li>
+          <li>Returns requested after the 6-hour reporting window for damaged or incorrect items.</li>
         </ul>
       </LegalSection>
 

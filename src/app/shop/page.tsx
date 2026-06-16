@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Navbar from "@/components/layout/navbar";
 import { db } from "@/lib/db";
+import { auth } from "@/auth";
 import { ProductCard } from "@/components/shop/product-card";
 import type { Metadata } from "next";
 
@@ -20,6 +21,9 @@ export default async function ShopPage() {
   });
 
   const categories = await db.category.findMany({ orderBy: { name: "asc" } });
+
+  const session = await auth();
+  const isLoggedIn = !!session?.user?.id;
 
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: "#F5EDE0" }}>
@@ -63,7 +67,7 @@ export default async function ShopPage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} isLoggedIn={isLoggedIn} />
               ))}
               {products.length === 0 && (
                 <div className="col-span-full py-24 text-center font-sans" style={{ color: "#6B5A42" }}>

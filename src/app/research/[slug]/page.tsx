@@ -289,11 +289,11 @@ export default async function ResearchArticlePage({
   if (!article) notFound();
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen" style={{ backgroundColor: "#F5EDE0" }}>
       <Navbar />
       <main className="flex-1">
-        {/* Header */}
-        <section className="py-16 dot-pattern border-b border-border">
+        {/* Header — solid bg so the 3D spine background can't bleed through the text */}
+        <section style={{ backgroundColor: "#F5EDE0" }} className="py-16 border-b border-border">
           <div className="container mx-auto px-4 lg:px-8 max-w-3xl">
             <Link
               href="/research"
@@ -308,17 +308,18 @@ export default async function ResearchArticlePage({
                 {article.sub}
               </p>
             </div>
-            <h1 className="font-serif text-4xl md:text-5xl font-light mb-6 leading-tight text-foreground">
+            <h1 className="font-serif text-4xl md:text-5xl font-light mb-6 leading-tight" style={{ color: "#1A0E05" }}>
               {article.title}
             </h1>
-            <p className="font-sans text-sm text-foreground/70 leading-relaxed max-w-2xl">
+            <p className="font-sans text-sm leading-relaxed max-w-2xl" style={{ color: "#3D2510" }}>
               {article.intro}
             </p>
           </div>
         </section>
 
         {/* Article body */}
-        <section className="py-16 container mx-auto px-4 lg:px-8 max-w-3xl">
+        <section style={{ backgroundColor: "#F5EDE0" }} className="py-16 px-4 lg:px-8">
+          <div className="container mx-auto max-w-3xl">
           <div className="space-y-8">
             {article.sections.map((section) => (
               <div
@@ -341,6 +342,7 @@ export default async function ResearchArticlePage({
               <strong className="font-semibold not-italic text-foreground/80">Research Disclaimer: </strong>
               {article.disclaimer}
             </p>
+          </div>
           </div>
         </section>
       </main>

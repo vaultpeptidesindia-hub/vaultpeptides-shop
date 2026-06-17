@@ -163,8 +163,8 @@ async function main() {
   ];
 
   for (const { variants, images, ...rest } of productsData) {
-    // images is a Postgres text[] column — pass the array directly
-    const productData = { ...rest, images };
+    // images stored as JSON-encoded string in a text column
+    const productData = { ...rest, images: JSON.stringify(images) };
     const product = await prisma.product.upsert({
       where: { slug: productData.slug },
       update: { ...productData },

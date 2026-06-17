@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 const ARTICLES = [
-  { title: "What is Retatrutide?", slug: "retatrutide", sub: "GIP / GLP-1 / Glucagon Tri-Agonist", desc: "A triple receptor agonist under research for metabolic regulation and weight management." },
+  { title: "What is Retatrutide?", slug: "retatrutide", sub: "GIP / GLP-1 / Glucagon Tri-Agonist", desc: "A triple-receptor agonist peptide supplied as an analytical reference standard for in-vitro laboratory research." },
   { title: "What is MOTS-c?", slug: "mots-c", sub: "Mitochondria-Derived Peptide", desc: "A mitochondrial peptide researched for its role in energy metabolism and insulin sensitivity." },
   { title: "What is GHK-Cu?", slug: "ghk-cu", sub: "Copper Tripeptide", desc: "A naturally occurring copper peptide studied for wound healing and skin remodelling." },
   { title: "What is Tesamorelin?", slug: "tesamorelin", sub: "GHRH Analogue", desc: "A synthetic growth-hormone-releasing hormone analogue under research for body composition." },

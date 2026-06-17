@@ -35,17 +35,17 @@ export default async function Home() {
         >
           <p className="inline-flex items-center gap-2 text-[10px] font-sans font-medium tracking-[0.25em] text-primary/70 uppercase mb-6">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/60 animate-pulse" />
-            Unlock Your Biological Potential
+            Analytical-Grade Reference Standards
           </p>
           <h1 className="font-serif text-5xl md:text-6xl font-light leading-tight mb-6" style={{ color: "#1A0E05" }}>
             The Backbone<br />
-            <em>of Vitality.</em>
+            <em>of Research.</em>
           </h1>
           <p className="text-sm font-sans leading-relaxed mb-3" style={{ color: "#3D2510" }}>
-            Welcome to Vault Peptides. We supply premium, lab-tested peptides designed to support peak physical performance, faster recovery, and healthy ageing.
+            Vault Peptides supplies analytical-grade, lab-tested peptide reference standards for academic, biotech, contract-research, and laboratory buyers.
           </p>
           <p className="text-sm font-sans leading-relaxed mb-10" style={{ color: "#5C3D20" }}>
-            Every batch is strictly tested for purity. Explore our catalog to find the highest quality products for your research and wellness journey.
+            Every batch is independently purity-tested, with a Certificate of Analysis (COA) available on request. Strictly for laboratory and research use — not for human or animal consumption.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
             <Link href="/shop">
@@ -123,7 +123,7 @@ export default async function Home() {
             99%+ <em>Purity Standard</em>
           </h2>
           <p className="font-sans leading-relaxed mb-12 max-w-2xl mx-auto" style={{ color: "#3D2510" }}>
-            When it comes to your body and your research, purity is everything. Vault Peptides promises products that are over 99% pure, and we prove it with strict, independent lab testing.
+            When it comes to research, purity is everything. Vault Peptides reference standards are over 99% pure, and we prove it with strict, independent lab testing and a Certificate of Analysis.
           </p>
           <div className="grid md:grid-cols-2 gap-6 text-left">
             <div className="border border-border rounded-lg p-8" style={{ backgroundColor: "#FAF5EE" }}>

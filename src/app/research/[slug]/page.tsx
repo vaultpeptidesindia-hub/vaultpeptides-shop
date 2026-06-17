@@ -18,29 +18,29 @@ const ARTICLES: Record<
   retatrutide: {
     title: "What is Retatrutide?",
     sub: "GIP / GLP-1 / Glucagon Tri-Agonist",
-    desc: "A triple receptor agonist under research for metabolic regulation and weight management.",
+    desc: "A triple-receptor agonist peptide supplied as an analytical reference standard for in-vitro laboratory research.",
     intro:
-      "Retatrutide (LY3437943) is an investigational triple receptor agonist that simultaneously targets the glucose-dependent insulinotropic polypeptide (GIP), glucagon-like peptide-1 (GLP-1), and glucagon receptors. It represents one of the most advanced molecules currently in clinical research for metabolic conditions.",
+      "Retatrutide (LY3437943) is a synthetic peptide classified as a GIP / GLP-1 / glucagon triple-receptor agonist. Vault Peptides supplies it solely as an analytical-grade biochemical reference standard for in-vitro laboratory research, assay development, and analytical method validation. It is not a drug, supplement, or consumer product.",
     sections: [
       {
-        heading: "Mechanism of Action",
-        body: "By simultaneously activating GIP, GLP-1, and glucagon receptors, Retatrutide produces a coordinated multi-pathway effect. GLP-1 and GIP receptor activation suppresses appetite and improves insulin secretion, while glucagon receptor activity promotes energy expenditure and fat oxidation. This tri-agonist approach is designed to produce greater metabolic benefit than dual or single-receptor agents.",
+        heading: "Molecular Profile",
+        body: "Retatrutide is a single-chain synthetic peptide that, in receptor-pharmacology research, is characterised against the GIP, GLP-1, and glucagon receptor families. As a reference material it is used to study receptor identity, binding, and signalling pathways at the bench. Vault Peptides makes no representation regarding any biological effect in humans or animals.",
       },
       {
-        heading: "Research Applications",
-        body: "Phase 2 clinical trials have evaluated Retatrutide in adults with obesity, demonstrating significant reductions in body weight over 24–48 weeks. Researchers are also investigating its potential in type 2 diabetes management, non-alcoholic steatohepatitis (NASH), and related cardiometabolic conditions.",
+        heading: "Laboratory Research Applications",
+        body: "As an analytical reference standard, Retatrutide is used by academic, biotech, and contract-research laboratories for in-vitro work such as receptor-binding assays, analytical method development, chromatography calibration, and mass-spectrometry reference comparison. All described uses are bench/in-vitro research only.",
       },
       {
-        heading: "Current Research Status",
-        body: "Retatrutide is currently undergoing Phase 3 clinical trials. It has not yet received approval from any regulatory body for therapeutic use. All research is conducted under clinical trial protocols by qualified investigators.",
+        heading: "Analytical Specifications",
+        body: "Supplied as a lyophilised powder with a purity specification of ≥ 99% determined by HPLC, with identity confirmed by mass spectrometry. A batch-specific Certificate of Analysis (COA) is available on request and documents purity, identity, and batch number for each lot.",
       },
       {
-        heading: "Storage & Handling",
-        body: "For research purposes, lyophilised Retatrutide should be stored at 2–8°C and protected from light. Once reconstituted, it should be used promptly or stored according to laboratory protocols.",
+        heading: "Handling & Storage",
+        body: "For laboratory handling only. Store the lyophilised reference standard at 2–8°C, protected from light. Reconstitution and handling should follow the receiving laboratory's standard operating procedures. Not for human or animal use.",
       },
     ],
     disclaimer:
-      "Retatrutide is a research compound. It has not been approved by any regulatory body for therapeutic use in humans. This content is for educational and scientific research purposes only.",
+      "Retatrutide is supplied strictly as an analytical/laboratory reference material for in-vitro research use only. It is NOT a drug, food, supplement, or medical product, is NOT for human or animal consumption, and no therapeutic, diagnostic, or clinical use is intended or implied. This content is technical reference information for qualified researchers.",
   },
   "mots-c": {
     title: "What is MOTS-c?",

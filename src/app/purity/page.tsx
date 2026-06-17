@@ -20,7 +20,7 @@ export default function PurityPage() {
               99%+ <em>Purity Standard</em>
             </h1>
             <p className="font-sans leading-relaxed" style={{ color: "#3D2510" }}>
-              When it comes to your body and your research, purity is everything. We prove it — batch by batch.
+              When it comes to research, purity is everything. We prove it — batch by batch, with a Certificate of Analysis.
             </p>
           </div>
         </section>
@@ -60,6 +60,20 @@ export default function PurityPage() {
                 </div>
               ))}
             </div>
+
+            {process.env.NEXT_PUBLIC_SAMPLE_COA_URL && (
+              <div className="mt-10 text-center">
+                <a
+                  href={process.env.NEXT_PUBLIC_SAMPLE_COA_URL}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex items-center gap-2 border px-8 h-12 rounded-none font-sans text-xs tracking-widest uppercase transition-colors hover:bg-primary/10"
+                  style={{ borderColor: "#C8B89E", color: "#1A0E05" }}
+                >
+                  View a Sample Certificate of Analysis
+                </a>
+              </div>
+            )}
           </div>
         </section>
 

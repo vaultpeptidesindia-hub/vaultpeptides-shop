@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { CartSync } from "@/components/shop/cart-sync";
 import { SpineLoader } from "@/components/spine-loader";
 import { WhatsAppButton } from "@/components/whatsapp-button";
+import { AgeGate } from "@/components/age-gate";
 import Footer from "@/components/layout/footer";
 import { JsonLd } from "@/components/seo/json-ld";
 import { organizationSchema, websiteSchema, SITE_URL } from "@/lib/seo";
@@ -61,6 +62,7 @@ export default async function RootLayout({
     <html lang="en" className={`${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col text-foreground" style={{ backgroundColor: "#F2EBE1" }}>
         <JsonLd data={[organizationSchema, websiteSchema]} />
+        <AgeGate />
         <SpineLoader />
         <CartSync isLoggedIn={!!session} />
         <div style={{ position: "relative", zIndex: 10 }} className="flex flex-col min-h-full">

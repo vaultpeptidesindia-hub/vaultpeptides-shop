@@ -13,11 +13,14 @@ export function AgeGate() {
   const [ack, setAck] = useState<boolean | null>(null); // null = not yet read
 
   useEffect(() => {
+    let acknowledged = false;
     try {
-      setAck(localStorage.getItem(STORAGE_KEY) === "yes");
+      acknowledged = localStorage.getItem(STORAGE_KEY) === "yes";
     } catch {
-      setAck(true); // if storage blocked, don't hard-block the site
+      acknowledged = true; // if storage is blocked, don't hard-block the site
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAck(acknowledged);
   }, []);
 
   const confirm = () => {

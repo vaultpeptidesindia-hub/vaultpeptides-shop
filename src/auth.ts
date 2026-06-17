@@ -13,7 +13,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   providers: [
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-      ? [Google({ clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET })]
+      ? [
+          Google({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            // Link to an existing account that signed up with the same (Google-verified)
+            // email via password, instead of erroring with OAuthAccountNotLinked.
+            allowDangerousEmailAccountLinking: true,
+          }),
+        ]
       : []),
 
     // Email + Password

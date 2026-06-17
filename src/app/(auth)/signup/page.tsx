@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { GoogleButton } from "@/components/auth/google-button";
 import Image from "next/image";
 
 export default function SignupPage() {
@@ -72,6 +73,17 @@ export default function SignupPage() {
             <Alert className="border-primary/50">
               <AlertDescription style={{ color: "#6B3520" }}>{success}</AlertDescription>
             </Alert>
+          )}
+
+          {process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true" && (
+            <>
+              <GoogleButton label="Sign up with Google" />
+              <div className="flex items-center gap-3">
+                <span className="h-px flex-1" style={{ backgroundColor: "#C8B89E" }} />
+                <span className="text-xs uppercase tracking-widest" style={{ color: "#8B7355" }}>or</span>
+                <span className="h-px flex-1" style={{ backgroundColor: "#C8B89E" }} />
+              </div>
+            </>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   creator: "Vault Peptides",
   publisher: "Vault Peptides",
   alternates: { canonical: "/" },
-  icons: { icon: "/logo.png", shortcut: "/logo.png", apple: "/logo.png" },
+  // Favicon/app icons come from file-based metadata: src/app/icon.png + apple-icon.png.
   openGraph: {
     type: "website",
     locale: "en_IN",

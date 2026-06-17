@@ -18,7 +18,7 @@ interface ProductCardProps {
     slug: string;
     description: string;
     basePrice: number;
-    images?: string | null;
+    images?: string[] | string | null;
     isFeatured: boolean;
     category?: { name: string };
     variants?: { id: string; name: string; price: number; stock?: number }[];

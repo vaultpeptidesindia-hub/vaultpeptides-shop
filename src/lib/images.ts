@@ -1,19 +1,19 @@
-// Product.images is stored as a JSON-encoded string array (portable across
-// SQLite + Postgres). These helpers safely decode it for the UI.
+// Product.images is a PostgreSQL text[] array. These helpers safely read it.
+// Also handles legacy JSON-encoded strings in case any old rows exist.
 
-export function parseImages(images: string | null | undefined): string[] {
+export function parseImages(images: string | string[] | null | undefined): string[] {
   if (!images) return [];
+  if (Array.isArray(images)) return images.filter((x): x is string => typeof x === "string");
   try {
     const parsed = JSON.parse(images);
     return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
   } catch {
-    // Tolerate a bare path that was stored without JSON encoding.
     return typeof images === "string" && images.startsWith("/") ? [images] : [];
   }
 }
 
 export function firstImage(
-  images: string | null | undefined,
+  images: string | string[] | null | undefined,
   fallback = "/logo.png"
 ): string {
   return parseImages(images)[0] ?? fallback;

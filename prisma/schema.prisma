@@ -110,9 +110,9 @@ model Product {
   basePrice   Float       @default(0)
   status      String      @default("ACTIVE")
   isFeatured  Boolean     @default(false)
-  // JSON-encoded array of image paths, e.g. "[\"/products/foo.png\"]".
+  // Array of image paths, e.g. ["/products/foo.png"].
   // Use parseImages()/firstImage() from src/lib/images.ts to read it.
-  images      String      @default("[]")
+  images      String[]    @default([])
   categoryId  String
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt

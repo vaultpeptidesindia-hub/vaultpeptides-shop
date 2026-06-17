@@ -19,11 +19,11 @@ export const createProduct = async (values: z.infer<typeof ProductSchema>) => {
   const validatedFields = ProductSchema.safeParse(values);
   if (!validatedFields.success) return { error: "Invalid fields!" };
 
-  // images is stored as a JSON-encoded string array (portable across DBs)
+  // images is a Postgres text[] column — pass the array directly
   const { images, ...rest } = validatedFields.data;
 
   try {
-    await db.product.create({ data: { ...rest, images: JSON.stringify(images) } });
+    await db.product.create({ data: { ...rest, images } });
     revalidatePath("/admin/products");
     revalidatePath("/shop");
     return { success: "Product created!" };
@@ -39,7 +39,7 @@ export const updateProduct = async (id: string, values: z.infer<typeof ProductSc
   const { images, ...rest } = validatedFields.data;
 
   try {
-    await db.product.update({ where: { id }, data: { ...rest, images: JSON.stringify(images) } });
+    await db.product.update({ where: { id }, data: { ...rest, images } });
     revalidatePath("/admin/products");
     revalidatePath("/shop");
     revalidatePath(`/product/${values.slug}`);

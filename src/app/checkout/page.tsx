@@ -3,13 +3,14 @@ import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { COATrustSection } from "@/components/coa-trust-section";
 import { auth } from "@/auth";
 import { getCart } from "@/actions/cart";
+import { getDefaultAddress } from "@/actions/addresses";
 import { firstImage } from "@/lib/images";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Checkout | Vault Peptides" };
 
 export default async function CheckoutPage() {
-  const [session, dbCart] = await Promise.all([auth(), getCart()]);
+  const [session, dbCart, savedAddress] = await Promise.all([auth(), getCart(), getDefaultAddress()]);
   const isLoggedIn = !!session?.user?.id;
 
   // Serialise DB cart items for the client component
@@ -32,7 +33,7 @@ export default async function CheckoutPage() {
           <p className="font-sans text-sm mb-10" style={{ color: "#3D2510" }}>
             Fill in your details and confirm your order via WhatsApp.
           </p>
-          <CheckoutForm isLoggedIn={isLoggedIn} dbItems={dbItems} />
+          <CheckoutForm isLoggedIn={isLoggedIn} dbItems={dbItems} savedAddress={savedAddress} />
           <div className="mt-16">
             <COATrustSection compact />
           </div>

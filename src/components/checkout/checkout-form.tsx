@@ -10,7 +10,7 @@ import { validateReferralCode } from "@/actions/referral";
 import { toast } from "sonner";
 import { useCart } from "@/store/use-cart";
 import { openWhatsApp } from "@/lib/whatsapp";
-import { MessageCircle, ShoppingBag, Tag, X } from "lucide-react";
+import { MessageCircle, ShoppingBag, Tag, X, MapPin, Pencil } from "lucide-react";
 import Link from "next/link";
 
 interface DbItem {
@@ -22,16 +22,30 @@ interface DbItem {
   image: string;
 }
 
+interface SavedAddress {
+  id: string;
+  name: string | null;
+  line1: string;
+  line2: string | null;
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
+}
+
 interface CheckoutFormProps {
   isLoggedIn: boolean;
   dbItems: DbItem[];
+  savedAddress?: SavedAddress | null;
 }
 
-export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
+const inputStyle = { backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" };
+
+export function CheckoutForm({ isLoggedIn, dbItems, savedAddress }: CheckoutFormProps) {
   const [loading, setLoading] = useState(false);
+  const [editing, setEditing] = useState(!savedAddress);
   const cartStore = useCart();
 
-  // Logged-in → use DB items. Guest → use Zustand items.
   const items = isLoggedIn ? dbItems : cartStore.items.map((i) => ({
     variantId: i.variantId,
     productName: i.productName,
@@ -44,7 +58,6 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
   const subtotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
   const hasItems = items.length > 0;
 
-  // ── Referral / coupon code ──
   const [codeInput, setCodeInput] = useState("");
   const [applying, setApplying] = useState(false);
   const [applied, setApplied] = useState<{ code: string; discount: number; affiliateName: string } | null>(null);
@@ -87,7 +100,6 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
       pincode: fd.get("pincode") as string,
       country: "India",
       referralCode: applied?.code,
-      // Pass guest items; server uses DB cart for logged-in users
       items: items.map((i) => ({
         variantId: i.variantId,
         quantity: i.quantity,
@@ -111,7 +123,6 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
         .map((i) => `• ${i.productName} ${i.variantName} × ${i.quantity} — ₹${(i.price * i.quantity).toLocaleString("en-IN")}`)
         .join("\n");
 
-      // Show subtotal/discount lines only when a code actually reduced the total.
       const totalsBlock =
         order.discountAmount > 0
           ? `*Subtotal:* ₹${order.subtotal.toLocaleString("en-IN")}\n*Discount${order.referralCode ? ` (${order.referralCode})` : ""}:* −₹${order.discountAmount.toLocaleString("en-IN")}\n*Total: ₹${order.totalAmount.toLocaleString("en-IN")}*`
@@ -120,8 +131,6 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
       const message =
         `Hello Vault Peptides,\n\nI would like to place an order.\n\n*Order ID:* ${order.orderNumber}\n\n*Customer:*\nName: ${addr.name}\nPhone: ${addr.phone}\nEmail: ${addr.email}\n\n*Ship to:*\n${addr.line1}${addr.line2 ? `, ${addr.line2}` : ""}\n${addr.city}, ${addr.state} – ${addr.pincode}, ${addr.country}\n\n*Items:*\n${productsList}\n\n${totalsBlock}\n\nPlease confirm. Thank you!`;
 
-      // Central helper → single source of truth for the business WhatsApp number,
-      // and a reliable anchor-click deep link across mobile + desktop.
       openWhatsApp(message);
     } else {
       toast.error(res.error || "Something went wrong. Please try again.");
@@ -149,43 +158,85 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
       {/* Shipping form */}
       <div className="lg:col-span-2">
         <div className="border border-border rounded-lg p-8" style={{ backgroundColor: "#EDE1CE" }}>
-          <h2 className="font-serif text-xl font-medium mb-6" style={{ color: "#1A0E05" }}>Shipping Information</h2>
-          <div className="grid gap-5">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-serif text-xl font-medium" style={{ color: "#1A0E05" }}>Shipping Information</h2>
+            {savedAddress && (
+              <button
+                type="button"
+                onClick={() => setEditing((v) => !v)}
+                className="flex items-center gap-1.5 text-xs font-sans tracking-wide text-primary hover:text-primary/80 transition-colors"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                {editing ? "Cancel edit" : "Edit address"}
+              </button>
+            )}
+          </div>
+
+          {/* Saved address card (read-only) */}
+          {savedAddress && !editing && (
+            <div className="rounded-lg border border-primary/20 p-4 mb-2" style={{ backgroundColor: "rgba(107,53,32,0.05)" }}>
+              <div className="flex items-start gap-3">
+                <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                <p className="font-sans text-sm leading-relaxed" style={{ color: "#3D2510" }}>
+                  {savedAddress.name && <><strong>{savedAddress.name}</strong><br /></>}
+                  {savedAddress.line1}{savedAddress.line2 ? `, ${savedAddress.line2}` : ""}<br />
+                  {savedAddress.city}, {savedAddress.state} – {savedAddress.pincode}<br />
+                  {savedAddress.country}
+                </p>
+              </div>
+              {/* Hidden inputs so FormData still has address values */}
+              <input type="hidden" name="line1" value={savedAddress.line1} />
+              <input type="hidden" name="line2" value={savedAddress.line2 ?? ""} />
+              <input type="hidden" name="city" value={savedAddress.city} />
+              <input type="hidden" name="state" value={savedAddress.state} />
+              <input type="hidden" name="pincode" value={savedAddress.pincode} />
+            </div>
+          )}
+
+          <div className={`grid gap-5${savedAddress && !editing ? " hidden" : ""}`}>
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name" style={{ color: "#3D2510" }}>Full Name *</Label>
-                <Input id="name" name="name" required placeholder="John Doe" className="h-11" style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }} />
+                <Label htmlFor="line1" style={{ color: "#3D2510" }}>Address Line 1 *</Label>
+                <Input id="line1" name="line1" required={!savedAddress || editing} placeholder="House / Flat no., Street" defaultValue={savedAddress?.line1 ?? ""} className="h-11" style={inputStyle} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone" style={{ color: "#3D2510" }}>Phone *</Label>
-                <Input id="phone" name="phone" required placeholder="+91 98765 43210" className="h-11" style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }} />
+                <Label htmlFor="line2" style={{ color: "#3D2510" }}>Address Line 2 (optional)</Label>
+                <Input id="line2" name="line2" placeholder="Landmark, Area" defaultValue={savedAddress?.line2 ?? ""} className="h-11" style={inputStyle} />
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email" style={{ color: "#3D2510" }}>Email *</Label>
-              <Input id="email" name="email" type="email" required placeholder="you@example.com" className="h-11" style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="line1" style={{ color: "#3D2510" }}>Address Line 1 *</Label>
-              <Input id="line1" name="line1" required placeholder="House / Flat no., Street" className="h-11" style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="line2" style={{ color: "#3D2510" }}>Address Line 2 (optional)</Label>
-              <Input id="line2" name="line2" placeholder="Landmark, Area" className="h-11" style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }} />
             </div>
             <div className="grid sm:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="city" style={{ color: "#3D2510" }}>City *</Label>
-                <Input id="city" name="city" required placeholder="Mumbai" className="h-11" style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }} />
+                <Input id="city" name="city" required={!savedAddress || editing} placeholder="Mumbai" defaultValue={savedAddress?.city ?? ""} className="h-11" style={inputStyle} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="state" style={{ color: "#3D2510" }}>State *</Label>
-                <Input id="state" name="state" required placeholder="Maharashtra" className="h-11" style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }} />
+                <Input id="state" name="state" required={!savedAddress || editing} placeholder="Maharashtra" defaultValue={savedAddress?.state ?? ""} className="h-11" style={inputStyle} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="pincode" style={{ color: "#3D2510" }}>Pincode *</Label>
-                <Input id="pincode" name="pincode" required placeholder="400001" className="h-11" style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }} />
+                <Input id="pincode" name="pincode" required={!savedAddress || editing} placeholder="400001" defaultValue={savedAddress?.pincode ?? ""} className="h-11" style={inputStyle} />
               </div>
+            </div>
+          </div>
+
+          {/* Contact fields always visible */}
+          <div className="grid gap-5 mt-5">
+            <Separator />
+            <h3 className="font-sans text-sm font-medium tracking-wide" style={{ color: "#3D2510" }}>Contact Details</h3>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" style={{ color: "#3D2510" }}>Full Name *</Label>
+                <Input id="name" name="name" required placeholder="John Doe" className="h-11" style={inputStyle} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone" style={{ color: "#3D2510" }}>Phone *</Label>
+                <Input id="phone" name="phone" required placeholder="+91 98765 43210" className="h-11" style={inputStyle} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email" style={{ color: "#3D2510" }}>Email *</Label>
+              <Input id="email" name="email" type="email" required placeholder="you@example.com" className="h-11" style={inputStyle} />
             </div>
           </div>
         </div>
@@ -212,7 +263,6 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
               <span className="font-semibold" style={{ color: "#1A0E05" }}>₹{subtotal.toLocaleString("en-IN")}</span>
             </div>
 
-            {/* Referral / coupon code */}
             {applied ? (
               <div className="flex items-center justify-between gap-2 rounded-md border border-primary/30 px-3 py-2" style={{ backgroundColor: "rgba(107,53,32,0.06)" }}>
                 <span className="flex items-center gap-1.5 text-xs font-sans font-medium text-primary">
@@ -230,7 +280,7 @@ export function CheckoutForm({ isLoggedIn, dbItems }: CheckoutFormProps) {
                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleApplyCode(); } }}
                   placeholder="Referral / coupon code"
                   className="h-10 uppercase tracking-wider"
-                  style={{ backgroundColor: "#FAF5EE", borderColor: "#C8B89E", color: "#1A0E05" }}
+                  style={inputStyle}
                 />
                 <Button
                   type="button"

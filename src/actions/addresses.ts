@@ -70,6 +70,29 @@ export const setDefaultAddress = async (addressId: string) => {
   return { success: true };
 };
 
+export const getDefaultAddress = async () => {
+  const session = await auth();
+  if (!session?.user?.id) return null;
+  return db.address.findFirst({ where: { userId: session.user.id, isDefault: true } });
+};
+
+export const updateAddress = async (id: string, values: AddressInput) => {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated." };
+
+  const parsed = AddressSchema.safeParse(values);
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid fields." };
+
+  const userId = session.user.id;
+  const owned = await db.address.findFirst({ where: { id, userId } });
+  if (!owned) return { error: "Address not found." };
+
+  await db.address.update({ where: { id }, data: parsed.data });
+  revalidatePath("/dashboard/addresses");
+  revalidatePath("/dashboard");
+  return { success: true };
+};
+
 export const deleteAddress = async (addressId: string) => {
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated." };

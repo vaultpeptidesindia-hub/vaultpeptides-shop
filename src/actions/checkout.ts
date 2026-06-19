@@ -161,6 +161,23 @@ export const processCheckout = async (values: CheckoutInput) => {
       if (cart) {
         await db.cartItem.deleteMany({ where: { cartId: cart.id } });
       }
+
+      // Upsert shipping address for this user
+      try {
+        const existingAddr = await db.address.findFirst({ where: { userId, isDefault: true } });
+        if (existingAddr) {
+          await db.address.update({
+            where: { id: existingAddr.id },
+            data: { name, line1, line2: line2 ?? null, city, state, pincode, country },
+          });
+        } else {
+          await db.address.create({
+            data: { userId, name, line1, line2: line2 ?? null, city, state, pincode, country, isDefault: true },
+          });
+        }
+      } catch (e) {
+        console.error("Address save failed (non-fatal):", e);
+      }
     }
 
     // Save clean, human-readable copies to /data (best-effort, never blocks the order)

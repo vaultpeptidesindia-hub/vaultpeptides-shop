@@ -152,12 +152,12 @@ async function main() {
       name: "CJC+IPA",
       slug: "cjc-ipa",
       description: "CJC-1295 without DAC combined with Ipamorelin — a dual GH secretagogue stack studied for growth hormone release and recovery research.",
-      basePrice: 4499,
+      basePrice: 8999,
       images: ["/products/CJC-IPA-10mg.png"],
       categoryId: blends.id,
       isFeatured: false,
       variants: [
-        { name: "10mg", price: 4499, stock: 50 },
+        { name: "10mg", price: 8999, stock: 50 },
       ],
     },
   ];

@@ -16,7 +16,7 @@ const ARTICLES = [
   { title: "What is Tesamorelin?", slug: "tesamorelin", sub: "GHRH Analogue", desc: "A synthetic growth-hormone-releasing hormone analogue under research for body composition." },
   { title: "What is Semax?", slug: "semax", sub: "ACTH-Derived Neuropeptide", desc: "A neuroprotective peptide derived from ACTH, studied for cognitive and neurological effects." },
   { title: "What is Selank?", slug: "selank", sub: "Tuftsin Analogue", desc: "A synthetic heptapeptide investigated for anxiolytic and immunomodulatory properties." },
-  { title: "What is Wolverine Blend?", slug: "wolverine-blend", sub: "Regenerative Stack", desc: "A proprietary peptide combination researched for accelerated tissue recovery." },
+  { title: "What is Wolverine Blend?", slug: "wolverine-blend", sub: "Regenerative Stack", desc: "A proprietary peptide combination studied in tissue-repair research." },
   { title: "What is Klow Blend?", slug: "klow-blend", sub: "Inflammation Modulation Stack", desc: "A research formulation targeting inflammation and joint-health pathways." },
   { title: "What is Glow Blend?", slug: "glow-blend", sub: "Skin Rejuvenation Stack", desc: "A peptide combination developed for skin rejuvenation and anti-ageing research." },
 ];

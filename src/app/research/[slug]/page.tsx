@@ -55,7 +55,7 @@ const ARTICLES: Record<
       },
       {
         heading: "Research Applications",
-        body: "Preclinical and early human studies have investigated MOTS-c in the context of insulin resistance, type 2 diabetes, obesity, and exercise performance. In animal models, it has demonstrated the ability to improve insulin sensitivity and reverse diet-induced obesity, independent of dietary changes.",
+        body: "Preclinical and early studies have investigated MOTS-c in the context of insulin-signalling pathways, metabolic regulation, and energy homeostasis. Published animal-model literature has examined its association with insulin sensitivity and metabolic markers. All such work is research-stage and described for scientific reference only.",
       },
       {
         heading: "Ageing Research",
@@ -105,7 +105,7 @@ const ARTICLES: Record<
     sections: [
       {
         heading: "Mechanism of Action",
-        body: "Tesamorelin binds to GHRH receptors in the anterior pituitary, stimulating the synthesis and pulsatile release of growth hormone (GH). Unlike direct GH administration, this mechanism preserves the natural feedback regulation of the hypothalamic-pituitary axis, maintaining GH within physiological ranges.",
+        body: "Tesamorelin binds to GHRH receptors in the anterior pituitary, stimulating the synthesis and pulsatile release of growth hormone (GH). In research models, this receptor-mediated mechanism preserves the natural feedback regulation of the hypothalamic-pituitary axis, maintaining GH within physiological ranges.",
       },
       {
         heading: "Approved Clinical Use",
@@ -113,7 +113,7 @@ const ARTICLES: Record<
       },
       {
         heading: "Broader Research Applications",
-        body: "Outside its approved indication, researchers are studying Tesamorelin in the context of age-related GH decline, muscle preservation, cognitive function in older adults, and non-alcoholic fatty liver disease (NAFLD). Early trials suggest potential benefit in improving body composition metrics in non-HIV populations.",
+        body: "Outside its approved indication, researchers are studying Tesamorelin in the context of age-related GH decline, muscle physiology, cognitive function in older adults, and non-alcoholic fatty liver disease (NAFLD). Published trials have examined body composition metrics in non-HIV research populations. This is research-stage literature provided for scientific reference only.",
       },
       {
         heading: "Storage & Handling",
@@ -144,7 +144,7 @@ const ARTICLES: Record<
       },
       {
         heading: "Storage & Handling",
-        body: "Lyophilised Semax should be stored at 2–8°C. Once reconstituted, it should be used within a short period or stored frozen. It is typically administered intranasally in research settings.",
+        body: "Lyophilised Semax should be stored at 2–8°C. Once reconstituted, it should be used within a short period or stored frozen, following the receiving laboratory's standard operating procedures. Not for human or animal use.",
       },
     ],
     disclaimer:
@@ -171,7 +171,7 @@ const ARTICLES: Record<
       },
       {
         heading: "Storage & Handling",
-        body: "Store lyophilised Selank at 2–8°C, protected from light. Once reconstituted, use promptly. It is typically administered intranasally or subcutaneously in research settings.",
+        body: "Store lyophilised Selank at 2–8°C, protected from light. Once reconstituted, use promptly, following the receiving laboratory's standard operating procedures. Not for human or animal use.",
       },
     ],
     disclaimer:
@@ -180,9 +180,9 @@ const ARTICLES: Record<
   "wolverine-blend": {
     title: "What is Wolverine Blend?",
     sub: "Regenerative Stack",
-    desc: "A proprietary peptide combination researched for accelerated tissue recovery.",
+    desc: "A proprietary peptide combination studied in tissue-repair research.",
     intro:
-      "Wolverine Blend is a proprietary Vault Peptides formulation combining synergistic peptides researched for their roles in tissue repair, recovery acceleration, and musculoskeletal regeneration. The blend is designed to target multiple recovery pathways simultaneously.",
+      "Wolverine Blend is a proprietary Vault Peptides formulation combining peptides studied in the context of tissue-repair and musculoskeletal-regeneration research. The blend is designed for laboratory study across multiple repair pathways.",
     sections: [
       {
         heading: "Research Focus",
@@ -194,7 +194,7 @@ const ARTICLES: Record<
       },
       {
         heading: "Synergistic Approach",
-        body: "The rationale for a peptide blend lies in addressing multiple recovery rate-limiting steps simultaneously — angiogenesis (blood supply to healing tissue), inflammation modulation (reducing excessive inflammatory signalling), and structural matrix repair (collagen and fibronectin production).",
+        body: "The rationale for a peptide blend lies in studying multiple rate-limiting steps of tissue repair in parallel — angiogenesis (blood supply to healing tissue), inflammation modulation (regulating inflammatory signalling), and structural matrix repair (collagen and fibronectin production).",
       },
       {
         heading: "Storage & Handling",

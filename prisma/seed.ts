@@ -138,7 +138,7 @@ async function main() {
     {
       name: "Wolverine Blend",
       slug: "wolverine-blend",
-      description: "Wolverine Blend is a regenerative peptide stack researched for accelerated recovery and tissue-repair mechanisms.",
+      description: "Wolverine Blend is a regenerative peptide stack studied in tissue-repair research.",
       basePrice: 3999,
       images: ["/products/WOLVERINE BLEND 10mg.png"],
       categoryId: blends.id,
@@ -151,7 +151,7 @@ async function main() {
     {
       name: "CJC+IPA",
       slug: "cjc-ipa",
-      description: "CJC-1295 without DAC combined with Ipamorelin — a dual GH secretagogue stack studied for growth hormone release and recovery research.",
+      description: "CJC-1295 without DAC combined with Ipamorelin — a dual GH secretagogue stack studied in growth-hormone-signalling research.",
       basePrice: 8999,
       images: ["/products/CJC-IPA-10mg.png"],
       categoryId: blends.id,
